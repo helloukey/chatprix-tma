@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
-import { backButton, init } from "@telegram-apps/sdk-react";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -19,10 +18,6 @@ export const metadata: Metadata = {
   title: "Chatprix",
   description: "Anonymous Chat App",
 };
-
-// Initialize the package.
-init();
-backButton.mount();
 
 export default function RootLayout({
   children,
