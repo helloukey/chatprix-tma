@@ -24,7 +24,13 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { cn, countries } from "@/lib/utils";
 import { Popover } from "@radix-ui/react-popover";
 import { format } from "date-fns";
@@ -64,19 +70,16 @@ const SettingsDrawer = () => {
           </div>
           <div className="grid w-full max-w-sm items-center gap-1.5">
             <Label htmlFor="email">Gender</Label>
-            <Tabs defaultValue="" className="w-full">
-              <TabsList className="w-full">
-                <TabsTrigger value="male" className="w-full">
-                  Male
-                </TabsTrigger>
-                <TabsTrigger value="female" className="w-full">
-                  Female
-                </TabsTrigger>
-                <TabsTrigger value="other" className="w-full">
-                  Other
-                </TabsTrigger>
-              </TabsList>
-            </Tabs>
+            <Select>
+              <SelectTrigger className="w-full">
+                <SelectValue placeholder="Select Gender" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="male">Male</SelectItem>
+                <SelectItem value="female">Female</SelectItem>
+                <SelectItem value="other">Other</SelectItem>
+              </SelectContent>
+            </Select>
           </div>
           <div className="grid w-full max-w-sm items-center gap-1.5">
             <Label htmlFor="email">Date of Birth</Label>
