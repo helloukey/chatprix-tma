@@ -15,10 +15,8 @@ import {
   Drawer,
   DrawerClose,
   DrawerContent,
-  DrawerDescription,
   DrawerFooter,
   DrawerHeader,
-  DrawerTitle,
   DrawerTrigger,
 } from "@/components/ui/drawer";
 import { Input } from "@/components/ui/input";
@@ -32,6 +30,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { cn, countries } from "@/lib/utils";
+import { DialogTitle } from "@radix-ui/react-dialog";
 import { Popover } from "@radix-ui/react-popover";
 import { format } from "date-fns";
 import {
@@ -40,12 +39,14 @@ import {
   Check,
   ChevronsUpDown,
 } from "lucide-react";
+import { useTheme } from "next-themes";
 import { useState } from "react";
 
 const SettingsDrawer = () => {
   const [date, setDate] = useState<Date>();
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState("");
+  const { setTheme, theme } = useTheme();
 
   return (
     <Drawer>
@@ -53,11 +54,25 @@ const SettingsDrawer = () => {
         <Bolt />
       </DrawerTrigger>
       <DrawerContent>
-        <DrawerHeader>
-          <DrawerTitle>Profile</DrawerTitle>
-          <DrawerDescription>
-            Customize your profile to attract others
-          </DrawerDescription>
+        <DrawerHeader className="justify-end">
+          <DialogTitle>
+            <Select
+              onValueChange={(value) => setTheme(value)}
+              value={theme || "dark"}
+            >
+              <SelectTrigger className="w-fit">
+                <span className="pr-2 text-xs opacity-50">Theme:</span>
+                <SelectValue
+                  placeholder={theme ? theme : "dark"}
+                />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="light">Light</SelectItem>
+                <SelectItem value="dark">Dark</SelectItem>
+                <SelectItem value="system">System</SelectItem>
+              </SelectContent>
+            </Select>
+          </DialogTitle>
         </DrawerHeader>
         <div className="w-full flex flex-col justify-center gap-4 px-4 my-8">
           <Avatar className="mx-auto">
@@ -65,13 +80,13 @@ const SettingsDrawer = () => {
             <AvatarFallback>CP</AvatarFallback>
           </Avatar>
           <div className="grid w-full max-w-sm items-center gap-1.5">
-            <Label htmlFor="email">Username</Label>
+            <Label htmlFor="username">Username</Label>
             <Input type="text" id="username" placeholder="johndoe" />
           </div>
           <div className="grid w-full max-w-sm items-center gap-1.5">
-            <Label htmlFor="email">Gender</Label>
+            <Label htmlFor="gender">Gender</Label>
             <Select>
-              <SelectTrigger className="w-full">
+              <SelectTrigger className="w-full text-muted-foreground">
                 <SelectValue placeholder="Select Gender" />
               </SelectTrigger>
               <SelectContent>
@@ -82,7 +97,7 @@ const SettingsDrawer = () => {
             </Select>
           </div>
           <div className="grid w-full max-w-sm items-center gap-1.5">
-            <Label htmlFor="email">Date of Birth</Label>
+            <Label htmlFor="dob">Date of Birth</Label>
             <Popover>
               <PopoverTrigger asChild>
                 <Button
@@ -115,13 +130,13 @@ const SettingsDrawer = () => {
                   variant="outline"
                   role="combobox"
                   aria-expanded={open}
-                  className="w-full justify-between"
+                  className="w-full justify-between text-muted-foreground"
                 >
                   {value
                     ? countries.find((country) => country.value === value)
                         ?.label
                     : "Select country..."}
-                  <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                  <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 text-muted-foreground" />
                 </Button>
               </PopoverTrigger>
               <PopoverContent className="w-[200px] p-0">
