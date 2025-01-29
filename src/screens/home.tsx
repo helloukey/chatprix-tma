@@ -260,7 +260,7 @@ export const SettingsDrawer = () => {
   );
 };
 
-const AlertDialogWrapper = () => {
+export const AlertDialogWrapper = () => {
   return (
     <AlertDialog>
       <AlertDialogTrigger asChild>
