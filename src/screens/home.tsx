@@ -1,5 +1,5 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Button } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import {
   Command,
@@ -307,6 +307,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import Link from "next/link";
 
 export const Hero = () => {
   return (
@@ -324,9 +325,15 @@ export const Hero = () => {
       </p>
       <div className="w-full flex gap-2">
         <AlertDialogWrapper />
-        <Button className="w-full">
+        <Link
+          href="/search"
+          className={buttonVariants({
+            variant: "default",
+            className: "w-full",
+          })}
+        >
           <Search /> Search
-        </Button>
+        </Link>
       </div>
     </div>
   );
