@@ -318,7 +318,7 @@ export const Hero = () => {
         width={192}
         height={192}
       />
-      <h1 className="text-3xl font-bold text-center">Welcome to Chatprix</h1>
+      {/* <h1 className="text-3xl font-bold text-center">Welcome to Chatprix</h1> */}
       <p className="text-muted-foreground text-center">
         Start chatting with strangers from around the world.
       </p>
