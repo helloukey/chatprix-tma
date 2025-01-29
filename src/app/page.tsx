@@ -1,6 +1,6 @@
 "use client";
 
-import { SettingsDrawer } from "@/pages/home";
+import { SettingsDrawer } from "@/screens/home";
 import heroImage from "@/assets/hero.svg";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
