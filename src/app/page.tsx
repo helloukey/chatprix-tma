@@ -4,6 +4,7 @@ import { SettingsDrawer } from "@/screens/home";
 import heroImage from "@/assets/hero.svg";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
+import { Filter, Search } from "lucide-react";
 
 export default function Home() {
   return (
@@ -25,11 +26,13 @@ export default function Home() {
         <p className="text-muted-foreground text-center">
           Start chatting with strangers from around the world.
         </p>
-        <div className="w-full flex flex-col gap-2">
+        <div className="w-full flex gap-2">
           <Button variant="secondary" className="w-full">
-            Search Preferences
+            <Filter /> Preferences
           </Button>
-          <Button className="w-full">Search for Partner</Button>
+          <Button className="w-full">
+            <Search /> Search
+          </Button>
         </div>
       </div>
       {/* Placeholder */}
