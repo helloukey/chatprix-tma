@@ -37,6 +37,8 @@ import {
   Calendar as CalendarIcon,
   Check,
   ChevronsUpDown,
+  Gem,
+  LockOpen,
 } from "lucide-react";
 import { useTheme } from "next-themes";
 import { useCallback, useMemo, useState } from "react";
@@ -255,5 +257,94 @@ export const SettingsDrawer = () => {
         </DrawerFooter>
       </DrawerContent>
     </Drawer>
+  );
+};
+
+const AlertDialogWrapper = () => {
+  return (
+    <AlertDialog>
+      <AlertDialogTrigger asChild>
+        <Button variant="secondary" className="w-full">
+          <Filter /> Preferences
+        </Button>
+      </AlertDialogTrigger>
+      <AlertDialogContent>
+        <AlertDialogHeader>
+          <AlertDialogTitle>🔓 Unlock Filters & Chat Better!</AlertDialogTitle>
+          <AlertDialogDescription>
+            Want better chat filters? Watch an ad to unlock them temporarily or
+            upgrade to PRO for unlimited access!
+          </AlertDialogDescription>
+        </AlertDialogHeader>
+        {/* Buttons Container */}
+        <div className="w-full flex flex-col gap-2 my-8">
+          <Button variant="secondary" className="w-full">
+            <LockOpen />
+            Unlock with Ad
+          </Button>
+          <Button className="w-full">
+            <Gem /> Upgrade to PRO
+          </Button>
+        </div>
+        <AlertDialogFooter className="flex-row justify-end">
+          <AlertDialogCancel>Close</AlertDialogCancel>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
+  );
+};
+
+import heroImage from "@/assets/hero.svg";
+import Image from "next/image";
+import { Filter, Search } from "lucide-react";
+import {
+  AlertDialog,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+
+export const Hero = () => {
+  return (
+    <div className="w-full flex flex-col items-center gap-4 my-8">
+      <Image
+        src={heroImage}
+        alt="Hero"
+        className="w-48 h-48"
+        width={192}
+        height={192}
+      />
+      <h1 className="text-3xl font-bold text-center">Welcome to Chatprix</h1>
+      <p className="text-muted-foreground text-center">
+        Start chatting with strangers from around the world.
+      </p>
+      <div className="w-full flex gap-2">
+        <AlertDialogWrapper />
+        <Button className="w-full">
+          <Search /> Search
+        </Button>
+      </div>
+    </div>
+  );
+};
+
+export const Footer = () => {
+  return (
+    <div className="w-full flex flex-col justify-center items-center text-xs mt-8">
+      <p className="text-muted-foreground text-center">Made with ❤️</p>
+      <a
+        href="
+          https://t.me/chatprix"
+        target="_blank"
+        rel="noopener noreferrer"
+        className="text-muted-foreground"
+      >
+        &copy; {new Date().getFullYear()} Chatprix
+      </a>
+    </div>
   );
 };
