@@ -29,10 +29,11 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { useToast } from "@/hooks/use-toast";
 import { cn, countries } from "@/lib/utils";
 import { DialogTitle } from "@radix-ui/react-dialog";
 import { Popover } from "@radix-ui/react-popover";
-import { format } from "date-fns";
+import { format, isAfter, isBefore, startOfDay, subYears } from "date-fns";
 import {
   Bolt,
   Calendar as CalendarIcon,
@@ -40,13 +41,58 @@ import {
   ChevronsUpDown,
 } from "lucide-react";
 import { useTheme } from "next-themes";
-import { useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 
 const SettingsDrawer = () => {
   const [date, setDate] = useState<Date>();
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState("");
   const { setTheme, theme } = useTheme();
+
+  const { toast } = useToast();
+  const [calendarDate, setCalendarDate] = useState<Date>(
+    subYears(new Date(), 18)
+  );
+
+  const today = startOfDay(new Date());
+  const maxDate = subYears(today, 18);
+  const minDate = subYears(today, 99);
+
+  const years = useMemo(() => {
+    const currentYear = new Date().getFullYear();
+    return Array.from({ length: 82 }, (_, i) => currentYear - 18 - i);
+  }, []);
+
+  const handleYearChange = useCallback(
+    (selectedYear: string) => {
+      const newYear = Number.parseInt(selectedYear, 10);
+      const newDate = new Date(newYear, calendarDate.getMonth(), 1);
+      setCalendarDate(newDate);
+    },
+    [calendarDate]
+  );
+
+  const isDateInRange = useCallback(
+    (date: Date) => {
+      return !isAfter(date, maxDate) && !isBefore(date, minDate);
+    },
+    [maxDate, minDate]
+  );
+
+  const handleDateSelect = (newDate: Date | undefined) => {
+    if (newDate && isDateInRange(newDate)) {
+      setDate(newDate);
+      setCalendarDate(newDate);
+    } else if (newDate) {
+      toast({
+        title: "Invalid date",
+        description: "Please select a date between 18 and 99 years ago.",
+        variant: "destructive",
+      });
+    } else {
+      setDate(undefined);
+    }
+  };
 
   return (
     <Drawer>
@@ -62,9 +108,7 @@ const SettingsDrawer = () => {
             >
               <SelectTrigger className="w-fit">
                 <span className="pr-2 text-xs opacity-50">Theme:</span>
-                <SelectValue
-                  placeholder={theme ? theme : "dark"}
-                />
+                <SelectValue placeholder={theme ? theme : "dark"} />
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="light">Light</SelectItem>
@@ -81,7 +125,7 @@ const SettingsDrawer = () => {
           </Avatar>
           <div className="grid w-full max-w-sm items-center gap-1.5">
             <Label htmlFor="username">Username</Label>
-            <Input type="text" id="username" placeholder="johndoe" />
+            <Input type="text" id="username" placeholder="eg: johndoe" className="text-sm font-medium text-muted-foreground" />
           </div>
           <div className="grid w-full max-w-sm items-center gap-1.5">
             <Label htmlFor="gender">Gender</Label>
@@ -104,18 +148,38 @@ const SettingsDrawer = () => {
                   variant={"outline"}
                   className={cn(
                     "w-full justify-start text-left font-normal",
-                    !date && "text-muted-foreground"
+                    "text-muted-foreground"
                   )}
                 >
                   <CalendarIcon className="mr-2 h-4 w-4" />
-                  {date ? format(date, "PPP") : <span>Date of Birth</span>}
+                  {date ? format(date, "PPP") : <span className="text-muted-foreground">Date of Birth</span>}
                 </Button>
               </PopoverTrigger>
-              <PopoverContent className="w-auto p-0">
+              <PopoverContent className="w-auto p-0" align="start">
+                <div className="flex items-center justify-between p-2 border-b">
+                  <Select
+                    value={calendarDate.getFullYear().toString()}
+                    onValueChange={handleYearChange}
+                  >
+                    <SelectTrigger className="w-[100px]">
+                      <SelectValue placeholder="Year" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {years.map((y) => (
+                        <SelectItem key={y} value={y.toString()}>
+                          {y}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
                 <Calendar
                   mode="single"
                   selected={date}
-                  onSelect={setDate}
+                  onSelect={handleDateSelect}
+                  month={calendarDate}
+                  onMonthChange={setCalendarDate}
+                  disabled={(date) => !isDateInRange(date)}
                   initialFocus
                 />
               </PopoverContent>
