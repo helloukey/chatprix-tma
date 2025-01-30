@@ -62,14 +62,14 @@ export const Action = () => {
     <div className="w-full flex gap-2 items-center p-4">
       <Textarea
         placeholder="Type a message..."
-        className="w-5/6 text-sm flex-grow resize-none overflow-hidden py-2 px-3"
+        className="w-11/12 text-sm flex-grow resize-none overflow-hidden py-2 px-3"
         style={{
           height: "40px",
           minHeight: "40px", // Ensure minimum height is always 40px
           lineHeight: "24px", // Adjust line height for better text alignment
         }}
       />
-      <Button variant="outline" size="icon">
+      <Button variant="outline" size="default" >
         <SendHorizonal />
       </Button>
     </div>
