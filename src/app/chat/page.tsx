@@ -1,3 +1,5 @@
+"use client";
+
 import { Header } from "@/screens/chat";
 
 export default function Chat() {
