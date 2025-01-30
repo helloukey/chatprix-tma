@@ -8,9 +8,6 @@ const defaultOptions = {
   loop: true,
   autoplay: true,
   animationData: searchData,
-  rendererSettings: {
-    preserveAspectRatio: "xMidYMid slice",
-  },
 };
 
 export default function Search() {
