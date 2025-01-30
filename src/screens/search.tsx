@@ -1,11 +1,10 @@
 "use client";
 
-import Lottie from "react-lottie";
+const Lottie = dynamic(() => import("react-lottie"), { ssr: false });
 import searchData from "@/assets/searching.json";
+import dynamic from "next/dynamic";
 
 export const SearchLottie = () => {
-  if (typeof window === "undefined") return null;
-
   const defaultOptions = {
     loop: true,
     autoplay: true,
