@@ -41,7 +41,7 @@ import {
   LockOpen,
 } from "lucide-react";
 import { useTheme } from "next-themes";
-import { useCallback, useMemo, useState } from "react";
+import { ReactNode, useCallback, useEffect, useMemo, useState } from "react";
 
 export const SettingsDrawer = () => {
   const [date, setDate] = useState<Date>();
@@ -308,6 +308,7 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import Link from "next/link";
+import { Particles } from "@/components/ui/particles";
 
 export const Hero = () => {
   return (
@@ -352,6 +353,28 @@ export const Footer = () => {
       >
         &copy; {new Date().getFullYear()} Chatprix
       </a>
+    </div>
+  );
+};
+
+export const ParticlesWrapper = ({ children }: { children: ReactNode }) => {
+  const { resolvedTheme } = useTheme();
+  const [color, setColor] = useState("#ffffff");
+
+  useEffect(() => {
+    setColor(resolvedTheme === "dark" ? "#ffffff" : "#000000");
+  }, [resolvedTheme]);
+
+  return (
+    <div className="relative w-full h-full bg-background md:shadow-xl">
+      <div className="w-full h-full z-10">{children}</div>
+      <Particles
+        className="absolute inset-0 z-0"
+        quantity={100}
+        ease={80}
+        color={color}
+        refresh
+      />
     </div>
   );
 };
