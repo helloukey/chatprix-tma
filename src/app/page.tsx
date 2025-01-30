@@ -4,7 +4,7 @@ import { Footer, Hero, SettingsDrawer } from "@/screens/home";
 
 export default function Home() {
   return (
-    <div className="w-full h-screen flex flex-col justify-between items-center gap-8 p-4">
+    <div className="w-full h-full flex flex-col justify-between items-center gap-8 p-4">
       {/* Navbar */}
       <div className="w-full flex justify-end items-center">
         <SettingsDrawer />

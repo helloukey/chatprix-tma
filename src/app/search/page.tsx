@@ -5,7 +5,7 @@ import { LottieSearch } from "@/screens/search";
 
 export default function Search() {
   return (
-    <div className="w-full h-screen flex flex-col justify-center items-center p-4">
+    <div className="w-full h-full flex flex-col justify-center items-center p-4">
       <LottieSearch />
       <p className="text-muted-foreground text-center mb-8">
         Searching for Partner...
