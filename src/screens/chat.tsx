@@ -13,6 +13,8 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button, buttonVariants } from "@/components/ui/button";
+import { Textarea } from "@/components/ui/textarea";
+import { SendHorizonal } from "lucide-react";
 
 export const Header = () => {
   return (
@@ -51,6 +53,25 @@ export const Header = () => {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+    </div>
+  );
+};
+
+export const Action = () => {
+  return (
+    <div className="w-full flex gap-2 items-center p-4">
+      <Textarea
+        placeholder="Type a message..."
+        className="w-5/6 text-sm flex-grow resize-none overflow-hidden py-2 px-3"
+        style={{
+          height: "40px",
+          minHeight: "40px", // Ensure minimum height is always 40px
+          lineHeight: "24px", // Adjust line height for better text alignment
+        }}
+      />
+      <Button variant="outline" size="icon">
+        <SendHorizonal />
+      </Button>
     </div>
   );
 };
