@@ -326,8 +326,10 @@ import Link from "next/link";
 import { Particles } from "@/components/ui/particles";
 import {
   Dialog,
+  DialogClose,
   DialogContent,
   DialogDescription,
+  DialogFooter,
   DialogHeader,
   DialogTrigger,
 } from "@/components/ui/dialog";
@@ -407,15 +409,17 @@ export const AvatarDialog = ({ children }: { children: ReactNode }) => {
 
   return (
     <Dialog>
-      <DialogTrigger>{children}</DialogTrigger>
+      <DialogTrigger className="bg-white rounded-full">
+        {children}
+      </DialogTrigger>
       <DialogContent>
         <DialogHeader>
           <DialogTitle>Profile</DialogTitle>
-          <DialogDescription>Create avatar for your profile.</DialogDescription>
+          <DialogDescription>Create your fun avatar</DialogDescription>
         </DialogHeader>
         {/* Avatar Generator */}
         <div
-          className="w-fit mx-auto rounded-full"
+          className="w-fit mx-auto rounded-full my-2"
           style={{ backgroundColor: avatarBackground }}
         >
           <Peep
@@ -437,77 +441,102 @@ export const AvatarDialog = ({ children }: { children: ReactNode }) => {
         {/* Container */}
         <div className="grid grid-cols-2 justify-center items-center gap-2">
           {/* Accessories  */}
-          <Select>
-            <SelectTrigger className="w-full">
-              <SelectValue placeholder="Accessories" />
-            </SelectTrigger>
-            <SelectContent>
-              {accessories.map((accessory) => (
-                <SelectItem key={accessory} value={accessory}>
-                  {accessory}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+          <div className="grid w-full max-w-sm items-center gap-1.5 mb-2">
+            <Label htmlFor="accessories">Accessories</Label>
+            <Select>
+              <SelectTrigger className="w-full truncate">
+                <SelectValue placeholder="Select" />
+              </SelectTrigger>
+              <SelectContent>
+                {accessories.map((accessory) => (
+                  <SelectItem key={accessory} value={accessory}>
+                    {accessory}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
           {/* Body */}
-          <Select>
-            <SelectTrigger className="w-full">
-              <SelectValue placeholder="Body" />
-            </SelectTrigger>
-            <SelectContent>
-              {body.map((b) => (
-                <SelectItem key={b} value={b}>
-                  {b}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+          <div className="grid w-full max-w-sm items-center gap-1.5 mb-2">
+            <Label htmlFor="body">Body</Label>
+            <Select>
+              <SelectTrigger className="w-full truncate">
+                <SelectValue placeholder="Select" />
+              </SelectTrigger>
+              <SelectContent>
+                {body.map((b) => (
+                  <SelectItem key={b} value={b}>
+                    {b}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
           {/* Face */}
-          <Select>
-            <SelectTrigger className="w-full">
-              <SelectValue placeholder="Face" />
-            </SelectTrigger>
-            <SelectContent>
-              {face.map((f) => (
-                <SelectItem key={f} value={f}>
-                  {f}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+          <div className="grid w-full max-w-sm items-center gap-1.5 mb-2">
+            <Label htmlFor="face">Face</Label>
+            <Select>
+              <SelectTrigger className="w-full truncate">
+                <SelectValue placeholder="Select" />
+              </SelectTrigger>
+              <SelectContent>
+                {face.map((f) => (
+                  <SelectItem key={f} value={f}>
+                    {f}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
           {/* Facial Hairs */}
-          <Select>
-            <SelectTrigger className="w-full">
-              <SelectValue placeholder="Facial Hairs" />
-            </SelectTrigger>
-            <SelectContent>
-              {facialHair.map((f) => (
-                <SelectItem key={f} value={f}>
-                  {f}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+          <div className="grid w-full max-w-sm items-center gap-1.5 mb-2">
+            <Label htmlFor="facial-hair">Facial Hair</Label>
+            <Select>
+              <SelectTrigger className="w-full truncate">
+                <SelectValue placeholder="Select" />
+              </SelectTrigger>
+              <SelectContent>
+                {facialHair.map((f) => (
+                  <SelectItem key={f} value={f}>
+                    {f}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
           {/* Hairs */}
-          <Select>
-            <SelectTrigger className="w-full">
-              <SelectValue placeholder="Hairs" />
-            </SelectTrigger>
-            <SelectContent>
-              {hair.map((f) => (
-                <SelectItem key={f} value={f}>
-                  {f}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+          <div className="grid w-full max-w-sm items-center gap-1.5">
+            <Label htmlFor="hair">Hair</Label>
+            <Select>
+              <SelectTrigger className="w-full truncate">
+                <SelectValue placeholder="Select" />
+              </SelectTrigger>
+              <SelectContent>
+                {hair.map((f) => (
+                  <SelectItem key={f} value={f}>
+                    {f}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
           {/* Background */}
-          <Input
-            type="color"
-            value={avatarBackground}
-            onChange={(e) => setAvatarBackground(e.target.value)}
-          />
+          <div className="grid w-full max-w-sm items-center gap-1.5">
+            <Label htmlFor="background">Background</Label>
+            <Input
+              type="color"
+              value={avatarBackground}
+              onChange={(e) => setAvatarBackground(e.target.value)}
+            />
+          </div>
         </div>
+        <DialogFooter className="flex flex-row items-center justify-end mt-4">
+          <DialogClose asChild>
+            <Button type="button" variant="default" className="w-fit">
+              Set & Close
+            </Button>
+          </DialogClose>
+        </DialogFooter>
       </DialogContent>
     </Dialog>
   );
