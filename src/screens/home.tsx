@@ -1,4 +1,3 @@
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import {
@@ -119,10 +118,10 @@ export const SettingsDrawer = () => {
           </DialogTitle>
         </DrawerHeader>
         <div className="w-full flex flex-col justify-center gap-4 px-4 my-8">
-          <Avatar className="mx-auto">
+          {/* <Avatar className="mx-auto">
             <AvatarImage src="https://github.com/shadcn.png" />
             <AvatarFallback>CP</AvatarFallback>
-          </Avatar>
+          </Avatar> */}
           <div className="grid w-full max-w-sm items-center gap-1.5">
             <Label htmlFor="username">Username</Label>
             <Input

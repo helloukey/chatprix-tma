@@ -11,7 +11,6 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
@@ -23,10 +22,10 @@ export const Header = () => {
   return (
     <div className="w-full flex items-center justify-between p-4 border-b">
       <div className="flex items-center gap-2">
-        <Avatar>
+        {/* <Avatar>
           <AvatarImage src="https://github.com/shadcn.png" />
           <AvatarFallback>CP</AvatarFallback>
-        </Avatar>
+        </Avatar> */}
         <p className="text-sm">
           JohnDoe{" "}
           <span className="text-xs text-muted-foreground">typing...</span>
