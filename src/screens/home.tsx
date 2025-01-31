@@ -119,23 +119,25 @@ export const SettingsDrawer = () => {
           </DialogTitle>
         </DrawerHeader>
         <div className="w-full flex flex-col justify-center gap-4 px-4">
-          <Button className="rounded-full mx-auto w-16 h-16 bg-white">
-            <Peep
-              style={{
-                width: 64,
-                height: 64,
-                justifyContent: "center",
-                alignSelf: "center",
-              }}
-              accessory="GlassRoundThick"
-              body="Shirt"
-              face="Cute"
-              hair="ShortVolumed"
-              facialHair="Dali"
-              strokeColor="black"
-              backgroundColor="white"
-            />
-          </Button>
+          <div className="w-full flex items-center justify-center">
+            <AvatarDialog>
+              <Peep
+                style={{
+                  width: 64,
+                  height: 64,
+                  justifyContent: "center",
+                  alignSelf: "center",
+                }}
+                accessory="GlassRoundThick"
+                body="Shirt"
+                face="Cute"
+                hair="ShortVolumed"
+                facialHair="Dali"
+                strokeColor="black"
+                backgroundColor="white"
+              />
+            </AvatarDialog>
+          </div>
           <div className="grid w-full max-w-sm items-center gap-1.5">
             <Label htmlFor="username">Username</Label>
             <Input
@@ -322,6 +324,14 @@ import {
 } from "@/components/ui/alert-dialog";
 import Link from "next/link";
 import { Particles } from "@/components/ui/particles";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { accessories, body, face, facialHair, hair } from "./avatar";
 
 export const Hero = () => {
   return (
@@ -389,5 +399,116 @@ export const ParticlesWrapper = ({ children }: { children: ReactNode }) => {
         refresh
       />
     </div>
+  );
+};
+
+export const AvatarDialog = ({ children }: { children: ReactNode }) => {
+  const [avatarBackground, setAvatarBackground] = useState("#FFFFFF");
+
+  return (
+    <Dialog>
+      <DialogTrigger>{children}</DialogTrigger>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>Profile</DialogTitle>
+          <DialogDescription>Create avatar for your profile.</DialogDescription>
+        </DialogHeader>
+        {/* Avatar Generator */}
+        <div
+          className="w-fit mx-auto rounded-full"
+          style={{ backgroundColor: avatarBackground }}
+        >
+          <Peep
+            style={{
+              width: 64,
+              height: 64,
+              justifyContent: "center",
+              alignSelf: "center",
+            }}
+            accessory="GlassRoundThick"
+            body="Shirt"
+            face="Cute"
+            hair="ShortVolumed"
+            facialHair="Dali"
+            strokeColor="black"
+            backgroundColor="white"
+          />
+        </div>
+        {/* Container */}
+        <div className="grid grid-cols-2 justify-center items-center gap-2">
+          {/* Accessories  */}
+          <Select>
+            <SelectTrigger className="w-full">
+              <SelectValue placeholder="Accessories" />
+            </SelectTrigger>
+            <SelectContent>
+              {accessories.map((accessory) => (
+                <SelectItem key={accessory} value={accessory}>
+                  {accessory}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+          {/* Body */}
+          <Select>
+            <SelectTrigger className="w-full">
+              <SelectValue placeholder="Body" />
+            </SelectTrigger>
+            <SelectContent>
+              {body.map((b) => (
+                <SelectItem key={b} value={b}>
+                  {b}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+          {/* Face */}
+          <Select>
+            <SelectTrigger className="w-full">
+              <SelectValue placeholder="Face" />
+            </SelectTrigger>
+            <SelectContent>
+              {face.map((f) => (
+                <SelectItem key={f} value={f}>
+                  {f}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+          {/* Facial Hairs */}
+          <Select>
+            <SelectTrigger className="w-full">
+              <SelectValue placeholder="Facial Hairs" />
+            </SelectTrigger>
+            <SelectContent>
+              {facialHair.map((f) => (
+                <SelectItem key={f} value={f}>
+                  {f}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+          {/* Hairs */}
+          <Select>
+            <SelectTrigger className="w-full">
+              <SelectValue placeholder="Hairs" />
+            </SelectTrigger>
+            <SelectContent>
+              {hair.map((f) => (
+                <SelectItem key={f} value={f}>
+                  {f}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+          {/* Background */}
+          <Input
+            type="color"
+            value={avatarBackground}
+            onChange={(e) => setAvatarBackground(e.target.value)}
+          />
+        </div>
+      </DialogContent>
+    </Dialog>
   );
 };
