@@ -1,3 +1,4 @@
+import Peep from "react-peeps";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import {
@@ -117,11 +118,24 @@ export const SettingsDrawer = () => {
             </Select>
           </DialogTitle>
         </DrawerHeader>
-        <div className="w-full flex flex-col justify-center gap-4 px-4 my-8">
-          {/* <Avatar className="mx-auto">
-            <AvatarImage src="https://github.com/shadcn.png" />
-            <AvatarFallback>CP</AvatarFallback>
-          </Avatar> */}
+        <div className="w-full flex flex-col justify-center gap-4 px-4">
+          <Button className="rounded-full mx-auto w-16 h-16 bg-white">
+            <Peep
+              style={{
+                width: 64,
+                height: 64,
+                justifyContent: "center",
+                alignSelf: "center",
+              }}
+              accessory="GlassRoundThick"
+              body="Shirt"
+              face="Cute"
+              hair="ShortVolumed"
+              facialHair="Dali"
+              strokeColor="black"
+              backgroundColor="white"
+            />
+          </Button>
           <div className="grid w-full max-w-sm items-center gap-1.5">
             <Label htmlFor="username">Username</Label>
             <Input
