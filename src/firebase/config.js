@@ -7,7 +7,7 @@ import { getAnalytics } from "firebase/analytics";
 // Your web app's Firebase configuration
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
-  apiKey: "AIzaSyDbYqPeqvBj04Y9XtN2BUamGyncbNNzInw",
+  apiKey: process.env.FIREBASE_API_KEY,
   authDomain: "chatprix-tma.firebaseapp.com",
   projectId: "chatprix-tma",
   storageBucket: "chatprix-tma.firebasestorage.app",
