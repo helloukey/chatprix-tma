@@ -1,14 +1,12 @@
 "use client";
 
 import { Footer, Hero, ParticlesWrapper, SettingsDrawer } from "@/screens/home";
-import { useEffect } from "react";
-import { initData } from "@telegram-apps/sdk-react";
+import { initData, useSignal } from "@telegram-apps/sdk-react";
 
 export default function Home() {
-  useEffect(() => {
-    const user = initData.user();
-    console.log(user);
-  }, [])
+  const initDataState = useSignal(initData.state);
+  console.log(initDataState?.user);
+
   return (
     <ParticlesWrapper>
       <div className="w-full h-full flex flex-col justify-between items-center gap-8 p-4">
