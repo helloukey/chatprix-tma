@@ -48,6 +48,7 @@ export const SettingsDrawer = () => {
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState("");
   const { setTheme, theme } = useTheme();
+  const { user } = useUserState((state) => state);
 
   const { toast } = useToast();
   const [calendarDate, setCalendarDate] = useState<Date>(
@@ -128,11 +129,11 @@ export const SettingsDrawer = () => {
                   justifyContent: "center",
                   alignSelf: "center",
                 }}
-                accessory="GlassRoundThick"
-                body="Shirt"
-                face="Cute"
-                hair="ShortVolumed"
-                facialHair="Dali"
+                accessory={user ? user.avatar.accessories : "GlassRoundThick"}
+                body={user ? user.avatar.body : "Shirt"}
+                face={user ? user.avatar.face : "Cute"}
+                hair={user ? user.avatar.hair : "ShortVolumed"}
+                facialHair={user ? user.avatar.facialHair : "Dali"}
                 strokeColor="black"
                 backgroundColor="white"
               />
@@ -334,6 +335,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { accessories, body, face, facialHair, hair } from "./avatar";
+import { useUserState } from "@/zustand/useStore";
 
 export const Hero = () => {
   return (
