@@ -192,11 +192,11 @@ export const SettingsDrawer = () => {
                   justifyContent: "center",
                   alignSelf: "center",
                 }}
-                accessory={user ? user.avatar.accessories : "GlassRoundThick"}
-                body={user ? user.avatar.body : "Shirt"}
-                face={user ? user.avatar.face : "Cute"}
-                hair={user ? user.avatar.hair : "ShortVolumed"}
-                facialHair={user ? user.avatar.facialHair : "Dali"}
+                accessory={user ? user.avatar.accessories : ""}
+                body={user ? user.avatar.body : ""}
+                face={user ? user.avatar.face : ""}
+                hair={user ? user.avatar.hair : ""}
+                facialHair={user ? user.avatar.facialHair : ""}
                 strokeColor="black"
                 backgroundColor="white"
               />
