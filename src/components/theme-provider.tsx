@@ -21,11 +21,9 @@ export function ThemeProvider({
   const performTelegramCheck = useCallback(async () => {
     try {
       setLoading(true);
-      if (isTMA()) {
-        const { tgWebAppData } = retrieveLaunchParams();
-        if (tgWebAppData && tgWebAppData.user) {
-          checkAndUpdateUser(tgWebAppData.user.id, setUser);
-        }
+      const { tgWebAppData } = retrieveLaunchParams();
+      if (tgWebAppData && tgWebAppData.user) {
+        checkAndUpdateUser(tgWebAppData.user.id, setUser);
       }
     } catch (error) {
       console.log(error);
@@ -36,9 +34,11 @@ export function ThemeProvider({
 
   useEffect(() => {
     // Init telegram sdk
-    init();
-    backButton.mount();
-    performTelegramCheck();
+    if (isTMA()) {
+      init();
+      backButton.mount();
+      performTelegramCheck();
+    }
   }, [performTelegramCheck]);
 
   return <NextThemesProvider {...props}>{children}</NextThemesProvider>;
