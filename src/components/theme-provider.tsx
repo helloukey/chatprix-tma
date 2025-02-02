@@ -10,8 +10,8 @@ export function ThemeProvider({
 }: ComponentProps<typeof NextThemesProvider>) {
     useEffect(() => {
       const lp = retrieveLaunchParams();
-      
-      console.log(lp);
+
+      console.log(lp.initData);
     }, []);
 
   return <NextThemesProvider {...props}>{children}</NextThemesProvider>;
