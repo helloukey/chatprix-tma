@@ -5,7 +5,7 @@ import { initData, useSignal } from "@telegram-apps/sdk-react";
 
 export default function Home() {
   const initDataState = useSignal(initData.state);
-  console.log(initDataState?.user);
+  console.log(initDataState);
 
   return (
     <ParticlesWrapper>
