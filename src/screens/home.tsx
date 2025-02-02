@@ -569,7 +569,7 @@ export const AvatarDialog = ({ children }: { children: ReactNode }) => {
         <DialogFooter className="flex flex-row items-center justify-end mt-4">
           <DialogClose asChild>
             <Button type="button" variant="default" className="w-fit">
-              Save Avatar
+              Save Changes
             </Button>
           </DialogClose>
         </DialogFooter>
