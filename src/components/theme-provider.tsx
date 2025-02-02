@@ -11,7 +11,7 @@ export function ThemeProvider({
     useEffect(() => {
       const lp = retrieveLaunchParams();
 
-      console.log(lp.initData);
+      console.log(lp.tgWebAppData?.user);
     }, []);
 
   return <NextThemesProvider {...props}>{children}</NextThemesProvider>;
