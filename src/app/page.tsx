@@ -2,10 +2,13 @@
 
 import { Footer, Hero, ParticlesWrapper, SettingsDrawer } from "@/screens/home";
 import { retrieveLaunchParams } from "@telegram-apps/sdk-react";
+import { useEffect } from "react";
 
 export default function Home() {
-  const lp = retrieveLaunchParams();
-  console.log(lp);
+  useEffect(() => {
+    const lp = retrieveLaunchParams();
+    console.log(lp);
+  }, []);
 
   return (
     <ParticlesWrapper>
