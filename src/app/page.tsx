@@ -1,8 +1,11 @@
 "use client";
 
 import { Footer, Hero, ParticlesWrapper, SettingsDrawer } from "@/screens/home";
+import { useUserState } from "@/zustand/useStore";
 
 export default function Home() {
+  const { loading, user } = useUserState((state) => state);
+  console.log({ loading, user });
 
   return (
     <ParticlesWrapper>

@@ -1,17 +1,45 @@
 "use client";
 
 import { ThemeProvider as NextThemesProvider } from "next-themes";
-import { ComponentProps, useEffect } from "react";
-import { retrieveLaunchParams } from "@telegram-apps/sdk-react";
+import { ComponentProps, useEffect, useCallback } from "react";
+import {
+  backButton,
+  init,
+  isTMA,
+  retrieveLaunchParams,
+} from "@telegram-apps/sdk-react";
+import { useUserState } from "@/zustand/useStore";
+import { checkAndUpdateUser } from "@/firebase/user";
 
 export function ThemeProvider({
   children,
   ...props
 }: ComponentProps<typeof NextThemesProvider>) {
+  const { setLoading, setUser } = useUserState((state) => state);
+
+  // Perform telegram check
+  const performTelegramCheck = useCallback(async () => {
+    try {
+      setLoading(true);
+      if (isTMA()) {
+        const { tgWebAppData } = retrieveLaunchParams();
+        if (tgWebAppData && tgWebAppData.user) {
+          checkAndUpdateUser(tgWebAppData.user.id, setUser);
+        }
+      }
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setLoading(false);
+    }
+  }, [setLoading, setUser]);
+
   useEffect(() => {
-    const data = retrieveLaunchParams();
-    console.log(data);
-  }, [])
+    // Init telegram sdk
+    init();
+    backButton.mount();
+    performTelegramCheck();
+  }, [performTelegramCheck]);
 
   return <NextThemesProvider {...props}>{children}</NextThemesProvider>;
 }

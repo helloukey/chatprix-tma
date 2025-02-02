@@ -1,3 +1,10 @@
+import {
+  accessories as accessoriesList,
+  body as bodyList,
+  face as faceList,
+  facialHair as facialHairList,
+  hair as hairList,
+} from "@/screens/avatar";
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 
@@ -203,3 +210,22 @@ export const countries = [
   { value: "zambia", label: "Zambia" },
   { value: "zimbabwe", label: "Zimbabwe" },
 ];
+
+export const generateAvatar = () => {
+  const accessories =
+    accessoriesList[Math.floor(Math.random() * accessoriesList.length)];
+  const body = bodyList[Math.floor(Math.random() * bodyList.length)];
+  const face = faceList[Math.floor(Math.random() * faceList.length)];
+  const facialHair =
+    facialHairList[Math.floor(Math.random() * facialHairList.length)];
+  const hair = hairList[Math.floor(Math.random() * hairList.length)];
+
+  return {
+    accessories,
+    body,
+    face,
+    facialHair,
+    hair,
+    background: "#ffffff",
+  };
+};
