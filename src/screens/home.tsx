@@ -38,6 +38,7 @@ import {
   Check,
   ChevronsUpDown,
   Gem,
+  Loader2,
   LockOpen,
 } from "lucide-react";
 import { useTheme } from "next-themes";
@@ -327,7 +328,6 @@ import Link from "next/link";
 import { Particles } from "@/components/ui/particles";
 import {
   Dialog,
-  DialogClose,
   DialogContent,
   DialogDescription,
   DialogFooter,
@@ -336,6 +336,8 @@ import {
 } from "@/components/ui/dialog";
 import { accessories, body, face, facialHair, hair } from "./avatar";
 import { useUserState } from "@/zustand/useStore";
+import { doc, getDoc, updateDoc } from "firebase/firestore";
+import { db } from "@/firebase/config";
 
 export const Hero = () => {
   return (
@@ -407,7 +409,7 @@ export const ParticlesWrapper = ({ children }: { children: ReactNode }) => {
 };
 
 export const AvatarDialog = ({ children }: { children: ReactNode }) => {
-  const { user } = useUserState((state) => state);
+  const { user, userId, setUser } = useUserState((state) => state);
   const [avatarBackground, setAvatarBackground] = useState(
     user ? user.avatar.background : "#ffffff"
   );
@@ -420,9 +422,63 @@ export const AvatarDialog = ({ children }: { children: ReactNode }) => {
   const [facialHairState, setFacialHairState] = useState(
     user ? user.avatar.facialHair : ""
   );
+  const { toast } = useToast();
+  const [updateLoading, setUpdateLoading] = useState(false);
+  const [dialogOpen, setDialogOpen] = useState(false);
+
+  // Handle Avatar Update
+  const handleAvatarUpdate = async () => {
+    if (
+      !accessoryState ||
+      !bodyState ||
+      !faceState ||
+      !hairState ||
+      !facialHairState
+    ) {
+      toast({
+        title: "Invalid Avatar",
+        description: "Please select all the avatar components.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    // Avatar map data
+    const avatar = {
+      accessories: accessoryState,
+      body: bodyState,
+      face: faceState,
+      hair: hairState,
+      facialHair: facialHairState,
+      background: avatarBackground,
+    };
+
+    // Update Avatar
+    try {
+      if (user && userId) {
+        setUpdateLoading(true);
+        const userRef = doc(db, "users", userId);
+        await updateDoc(userRef, { avatar });
+        const data = await getDoc(userRef);
+        if (data.exists()) {
+          setUser(data.data());
+        }
+      }
+    } catch (error) {
+      console.error("Error updating avatar", error);
+      toast({
+        title: "Error",
+        description: "Failed to update avatar. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setUpdateLoading(false);
+      setDialogOpen(false);
+    }
+  };
 
   return (
-    <Dialog>
+    <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
       <DialogTrigger
         className="rounded-full"
         style={
@@ -567,11 +623,16 @@ export const AvatarDialog = ({ children }: { children: ReactNode }) => {
           </div>
         </div>
         <DialogFooter className="flex flex-row items-center justify-end mt-4">
-          <DialogClose asChild>
-            <Button type="button" variant="default" className="w-fit">
-              Save Changes
-            </Button>
-          </DialogClose>
+          <Button
+            type="button"
+            variant="default"
+            className="w-fit"
+            onClick={handleAvatarUpdate}
+            disabled={updateLoading}
+          >
+            {updateLoading ? <Loader2 className="animate-spin" /> : null}
+            {updateLoading ? "Saving..." : "Save Changes"}
+          </Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>

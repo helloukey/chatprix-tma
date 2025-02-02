@@ -5,23 +5,26 @@ import { generateAvatar } from "@/lib/utils";
 
 const checkAndUpdateUser = async (
   telegramId: number,
-  setUser: DocumentData | null
+  setUser: (arg: DocumentData | null) => void,
+  setUserId: (arg: string | null) => void
 ) => {
   const id = telegramId.toString();
   const docRef = doc(db, "users", id);
   const docSnap = await getDoc(docRef);
 
   if (docSnap.exists()) {
-    // @ts-expect-error unknown type
     setUser(docSnap.data());
+    setUserId(id);
   } else {
     await setDoc(docRef, {
       username: generateUsername("", 0, 8),
       avatar: generateAvatar(),
     });
     const data = await getDoc(docRef);
-    // @ts-expect-error unknown type
-    setUser(data.data());
+    if (data.exists()) {
+      setUser(data.data());
+      setUserId(id);
+    }
   }
 };
 
