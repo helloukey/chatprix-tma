@@ -407,11 +407,30 @@ export const ParticlesWrapper = ({ children }: { children: ReactNode }) => {
 };
 
 export const AvatarDialog = ({ children }: { children: ReactNode }) => {
-  const [avatarBackground, setAvatarBackground] = useState("#FFFFFF");
+  const { user } = useUserState((state) => state);
+  const [avatarBackground, setAvatarBackground] = useState(
+    user ? user.avatar.background : "#ffffff"
+  );
+  const [accessoryState, setAccessoryState] = useState(
+    user ? user.avatar.accessories : ""
+  );
+  const [bodyState, setBodyState] = useState(user ? user.avatar.body : "");
+  const [faceState, setFaceState] = useState(user ? user.avatar.face : "");
+  const [hairState, setHairState] = useState(user ? user.avatar.hair : "");
+  const [facialHairState, setFacialHairState] = useState(
+    user ? user.avatar.facialHair : ""
+  );
 
   return (
     <Dialog>
-      <DialogTrigger className="bg-white rounded-full">
+      <DialogTrigger
+        className="rounded-full"
+        style={
+          user
+            ? { backgroundColor: user.avatar.background }
+            : { backgroundColor: "white" }
+        }
+      >
         {children}
       </DialogTrigger>
       <DialogContent>
@@ -431,11 +450,11 @@ export const AvatarDialog = ({ children }: { children: ReactNode }) => {
               justifyContent: "center",
               alignSelf: "center",
             }}
-            accessory="GlassRoundThick"
-            body="Shirt"
-            face="Cute"
-            hair="ShortVolumed"
-            facialHair="Dali"
+            accessory={accessoryState}
+            body={bodyState}
+            face={faceState}
+            hair={hairState}
+            facialHair={facialHairState}
             strokeColor="black"
             backgroundColor="white"
           />
@@ -445,7 +464,10 @@ export const AvatarDialog = ({ children }: { children: ReactNode }) => {
           {/* Accessories  */}
           <div className="grid w-full max-w-sm items-center gap-1.5 mb-2">
             <Label htmlFor="accessories">Accessories</Label>
-            <Select>
+            <Select
+              onValueChange={(value) => setAccessoryState(value)}
+              value={accessoryState}
+            >
               <SelectTrigger className="w-full truncate">
                 <SelectValue placeholder="Select" />
               </SelectTrigger>
@@ -461,7 +483,10 @@ export const AvatarDialog = ({ children }: { children: ReactNode }) => {
           {/* Body */}
           <div className="grid w-full max-w-sm items-center gap-1.5 mb-2">
             <Label htmlFor="body">Body</Label>
-            <Select>
+            <Select
+              onValueChange={(value) => setBodyState(value)}
+              value={bodyState}
+            >
               <SelectTrigger className="w-full truncate">
                 <SelectValue placeholder="Select" />
               </SelectTrigger>
@@ -477,7 +502,10 @@ export const AvatarDialog = ({ children }: { children: ReactNode }) => {
           {/* Face */}
           <div className="grid w-full max-w-sm items-center gap-1.5 mb-2">
             <Label htmlFor="face">Face</Label>
-            <Select>
+            <Select
+              onValueChange={(value) => setFaceState(value)}
+              value={faceState}
+            >
               <SelectTrigger className="w-full truncate">
                 <SelectValue placeholder="Select" />
               </SelectTrigger>
@@ -493,7 +521,10 @@ export const AvatarDialog = ({ children }: { children: ReactNode }) => {
           {/* Facial Hairs */}
           <div className="grid w-full max-w-sm items-center gap-1.5 mb-2">
             <Label htmlFor="facial-hair">Facial Hair</Label>
-            <Select>
+            <Select
+              onValueChange={(value) => setFacialHairState(value)}
+              value={facialHairState}
+            >
               <SelectTrigger className="w-full truncate">
                 <SelectValue placeholder="Select" />
               </SelectTrigger>
@@ -509,7 +540,10 @@ export const AvatarDialog = ({ children }: { children: ReactNode }) => {
           {/* Hairs */}
           <div className="grid w-full max-w-sm items-center gap-1.5">
             <Label htmlFor="hair">Hair</Label>
-            <Select>
+            <Select
+              onValueChange={(value) => setHairState(value)}
+              value={hairState}
+            >
               <SelectTrigger className="w-full truncate">
                 <SelectValue placeholder="Select" />
               </SelectTrigger>
@@ -535,7 +569,7 @@ export const AvatarDialog = ({ children }: { children: ReactNode }) => {
         <DialogFooter className="flex flex-row items-center justify-end mt-4">
           <DialogClose asChild>
             <Button type="button" variant="default" className="w-fit">
-              Set & Close
+              Save Avatar
             </Button>
           </DialogClose>
         </DialogFooter>
