@@ -43,18 +43,27 @@ import {
 } from "lucide-react";
 import { useTheme } from "next-themes";
 import { ReactNode, useCallback, useEffect, useMemo, useState } from "react";
+import { useUserState } from "@/zustand/useStore";
 
 export const SettingsDrawer = () => {
-  const [date, setDate] = useState<Date>();
+  const { user, setUser, userId } = useUserState((state) => state);
+  const [date, setDate] = useState<Date | undefined>(
+    user && user?.dob ? user.dob : undefined
+  );
   const [open, setOpen] = useState(false);
-  const [value, setValue] = useState("");
   const { setTheme, theme } = useTheme();
-  const { user } = useUserState((state) => state);
 
   const { toast } = useToast();
   const [calendarDate, setCalendarDate] = useState<Date>(
     subYears(new Date(), 18)
   );
+  const [username, setUsername] = useState(user ? user.username : "");
+  const [gender, setGender] = useState(user && user?.gender ? user.gender : "");
+  const [country, setCountry] = useState(
+    user && user?.country ? user.country : ""
+  );
+  const [updateLoading, setUpdateLoading] = useState(false);
+  const [drawerOpen, setDrawerOpen] = useState(false);
 
   const today = startOfDay(new Date());
   const maxDate = subYears(today, 18);
@@ -96,8 +105,60 @@ export const SettingsDrawer = () => {
     }
   };
 
+  // Handle Profile Update
+  const handleProfileUpdate = async () => {
+    if (!username || !gender || !date || !country) {
+      toast({
+        title: "Invalid Profile",
+        description: "Please fill in all the fields.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    const trimmedUsername = username.trim();
+
+    // Username must be between 3 and 8 characters
+    if (trimmedUsername.length < 3 || trimmedUsername.length > 8) {
+      toast({
+        title: "Invalid Username",
+        description: "Username must be between 3 and 8 characters.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    // Update Profile
+    try {
+      if (user && userId) {
+        setUpdateLoading(true);
+        const userRef = doc(db, "users", userId);
+        await updateDoc(userRef, {
+          username: trimmedUsername,
+          gender,
+          dob: date,
+          country,
+        });
+        const data = await getDoc(userRef);
+        if (data.exists()) {
+          setUser(data.data());
+          setDrawerOpen(false);
+        }
+      }
+    } catch (error) {
+      console.error("Error updating profile", error);
+      toast({
+        title: "Error",
+        description: "Failed to update profile. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setUpdateLoading(false);
+    }
+  };
+
   return (
-    <Drawer>
+    <Drawer open={drawerOpen} onOpenChange={setDrawerOpen}>
       <DrawerTrigger>
         <Bolt />
       </DrawerTrigger>
@@ -147,11 +208,13 @@ export const SettingsDrawer = () => {
               id="username"
               placeholder="eg: johndoe"
               className="text-sm font-medium text-muted-foreground"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
             />
           </div>
           <div className="grid w-full max-w-sm items-center gap-1.5">
             <Label htmlFor="gender">Gender</Label>
-            <Select>
+            <Select value={gender} onValueChange={setGender}>
               <SelectTrigger className="w-full text-muted-foreground">
                 <SelectValue placeholder="Select Gender" />
               </SelectTrigger>
@@ -222,9 +285,8 @@ export const SettingsDrawer = () => {
                   aria-expanded={open}
                   className="w-full justify-between text-muted-foreground"
                 >
-                  {value
-                    ? countries.find((country) => country.value === value)
-                        ?.label
+                  {country
+                    ? countries.find((data) => data.value === country)?.label
                     : "Select country..."}
                   <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 text-muted-foreground" />
                 </Button>
@@ -235,13 +297,13 @@ export const SettingsDrawer = () => {
                   <CommandList>
                     <CommandEmpty>No country found.</CommandEmpty>
                     <CommandGroup>
-                      {countries.map((country) => (
+                      {countries.map((data) => (
                         <CommandItem
-                          key={country.value}
-                          value={country.value}
+                          key={data.value}
+                          value={data.value}
                           onSelect={(currentValue) => {
-                            setValue(
-                              currentValue === value ? "" : currentValue
+                            setCountry(
+                              currentValue === country ? "" : currentValue
                             );
                             setOpen(false);
                           }}
@@ -249,12 +311,12 @@ export const SettingsDrawer = () => {
                           <Check
                             className={cn(
                               "mr-2 h-4 w-4",
-                              value === country.value
+                              country === data.value
                                 ? "opacity-100"
                                 : "opacity-0"
                             )}
                           />
-                          {country.label}
+                          {data.label}
                         </CommandItem>
                       ))}
                     </CommandGroup>
@@ -270,7 +332,14 @@ export const SettingsDrawer = () => {
               Cancel
             </Button>
           </DrawerClose>
-          <Button className="w-full">Update Profile</Button>
+          <Button
+            className="w-full"
+            onClick={handleProfileUpdate}
+            disabled={updateLoading}
+          >
+            {updateLoading ? <Loader2 className="animate-spin" /> : null}
+            {updateLoading ? "Updating..." : "Update Profile"}
+          </Button>
         </DrawerFooter>
       </DrawerContent>
     </Drawer>
@@ -335,7 +404,6 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { accessories, body, face, facialHair, hair } from "./avatar";
-import { useUserState } from "@/zustand/useStore";
 import { doc, getDoc, updateDoc } from "firebase/firestore";
 import { db } from "@/firebase/config";
 
@@ -455,13 +523,14 @@ export const AvatarDialog = ({ children }: { children: ReactNode }) => {
 
     // Update Avatar
     try {
+      setUpdateLoading(true);
       if (user && userId) {
-        setUpdateLoading(true);
         const userRef = doc(db, "users", userId);
         await updateDoc(userRef, { avatar });
         const data = await getDoc(userRef);
         if (data.exists()) {
           setUser(data.data());
+          setDialogOpen(false);
         }
       }
     } catch (error) {
@@ -473,7 +542,6 @@ export const AvatarDialog = ({ children }: { children: ReactNode }) => {
       });
     } finally {
       setUpdateLoading(false);
-      setDialogOpen(false);
     }
   };
 
