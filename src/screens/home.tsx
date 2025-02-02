@@ -47,6 +47,7 @@ import { useUserState } from "@/zustand/useStore";
 
 export const SettingsDrawer = () => {
   const { user, setUser, userId } = useUserState((state) => state);
+  console.log("user: ", user);
   const [date, setDate] = useState<Date | undefined>(
     user && user?.dob ? user.dob : undefined
   );
