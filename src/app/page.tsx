@@ -2,11 +2,11 @@
 
 import { Footer, Hero, ParticlesWrapper, SettingsDrawer } from "@/screens/home";
 import { useEffect } from "react";
-import { initDataUser } from "@telegram-apps/sdk-react";
+import { initData } from "@telegram-apps/sdk-react";
 
 export default function Home() {
   useEffect(() => {
-    const user = initDataUser();
+    const user = initData.user();
     console.log(user);
   }, [])
   return (
