@@ -1,11 +1,11 @@
 "use client";
 
 import { Footer, Hero, ParticlesWrapper, SettingsDrawer } from "@/screens/home";
-import { initData, useSignal } from "@telegram-apps/sdk-react";
+import { retrieveLaunchParams } from "@telegram-apps/sdk-react";
 
 export default function Home() {
-  const initDataState = useSignal(initData.state);
-  console.log(initDataState);
+  const lp = retrieveLaunchParams();
+  console.log(lp);
 
   return (
     <ParticlesWrapper>
