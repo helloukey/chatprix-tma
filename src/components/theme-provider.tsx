@@ -8,7 +8,7 @@ export function ThemeProvider({
   children,
   ...props
 }: ComponentProps<typeof NextThemesProvider>) {
-    const user = initData.user;
+    const user = initData.user();
     console.log(user);
 
   return <NextThemesProvider {...props}>{children}</NextThemesProvider>;
