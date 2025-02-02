@@ -47,7 +47,6 @@ import { useUserState } from "@/zustand/useStore";
 
 export const SettingsDrawer = () => {
   const { user, setUser, userId } = useUserState((state) => state);
-  console.log("user: ", user);
   const [date, setDate] = useState<Date | undefined>(
     user && user?.dob ? user.dob : undefined
   );
@@ -58,11 +57,9 @@ export const SettingsDrawer = () => {
   const [calendarDate, setCalendarDate] = useState<Date>(
     subYears(new Date(), 18)
   );
-  const [username, setUsername] = useState(user ? user.username : "");
-  const [gender, setGender] = useState(user && user?.gender ? user.gender : "");
-  const [country, setCountry] = useState(
-    user && user?.country ? user.country : ""
-  );
+  const [username, setUsername] = useState("");
+  const [gender, setGender] = useState("");
+  const [country, setCountry] = useState("");
   const [updateLoading, setUpdateLoading] = useState(false);
   const [drawerOpen, setDrawerOpen] = useState(false);
 
@@ -157,6 +154,16 @@ export const SettingsDrawer = () => {
       setUpdateLoading(false);
     }
   };
+
+  // Update User State
+  useEffect(() => {
+    if (user) {
+      setUsername(user.username);
+      setGender(user?.gender ? user.gender : "");
+      setDate(user?.dob ? user.dob : undefined);
+      setCountry(user?.country ? user.country : "");
+    }
+  }, [user]);
 
   return (
     <Drawer open={drawerOpen} onOpenChange={setDrawerOpen}>
