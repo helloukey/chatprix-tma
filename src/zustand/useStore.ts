@@ -11,7 +11,7 @@ interface UserState {
 const useUserState = create<UserState>()((set) => ({
   user: null,
   setUser: (user) => set({ user }),
-  loading: true,
+  loading: false,
   setLoading: (loading) => set({ loading }),
 }));
 
