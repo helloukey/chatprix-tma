@@ -342,12 +342,13 @@ import { db } from "@/firebase/config";
 import { DatePicker } from "@/components/ui/custom-date-picker";
 import { fromUnixTime } from "date-fns";
 import { updateQueue } from "@/firebase/queue";
-import { redirect } from "next/navigation";
+import { useRouter } from "next/navigation";
 
 export const Hero = () => {
   const { user, userId, loading } = useUserState((state) => state);
   const { toast } = useToast();
   const [searchLoading, setSearchLoading] = useState(false);
+  const router = useRouter();
 
   // Handle Search
   const handleSearch = async () => {
@@ -357,7 +358,7 @@ export const Hero = () => {
         const result = await updateQueue(user, userId);
         if (result) {
           // Navigate to search screen
-          redirect("/search");
+          router.push("/search");
         } else {
           toast({
             title: "Error",
