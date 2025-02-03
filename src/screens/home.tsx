@@ -1,6 +1,5 @@
 import Peep from "react-peeps";
 import { Button, buttonVariants } from "@/components/ui/button";
-import { Calendar } from "@/components/ui/calendar";
 import {
   Command,
   CommandEmpty,
@@ -31,10 +30,8 @@ import { useToast } from "@/hooks/use-toast";
 import { cn, countries } from "@/lib/utils";
 import { DialogTitle } from "@radix-ui/react-dialog";
 import { Popover } from "@radix-ui/react-popover";
-import { format, isAfter, isBefore, startOfDay, subYears } from "date-fns";
 import {
   Bolt,
-  Calendar as CalendarIcon,
   Check,
   ChevronsUpDown,
   Gem,
@@ -42,7 +39,7 @@ import {
   LockOpen,
 } from "lucide-react";
 import { useTheme } from "next-themes";
-import { ReactNode, useCallback, useEffect, useMemo, useState } from "react";
+import { ReactNode, useEffect, useState } from "react";
 import { useUserState } from "@/zustand/useStore";
 
 export const SettingsDrawer = () => {
@@ -50,64 +47,36 @@ export const SettingsDrawer = () => {
   const [date, setDate] = useState<Date | undefined>(
     user && user?.dob ? user.dob : undefined
   );
+  const [firestoreTimestamp, setFirestoreTimestamp] =
+    useState<Timestamp | null>(null);
   const [open, setOpen] = useState(false);
   const { setTheme, theme } = useTheme();
 
   const { toast } = useToast();
-  const [calendarDate, setCalendarDate] = useState<Date>(
-    subYears(new Date(), 18)
-  );
   const [username, setUsername] = useState("");
   const [gender, setGender] = useState("");
   const [country, setCountry] = useState("");
   const [updateLoading, setUpdateLoading] = useState(false);
   const [drawerOpen, setDrawerOpen] = useState(false);
 
-  const today = startOfDay(new Date());
-  const maxDate = subYears(today, 18);
-  const minDate = subYears(today, 99);
+  // Handle Date select
+  const handleDateChange = (newDate: Date | undefined) => {
+    setDate(newDate);
 
-  const years = useMemo(() => {
-    const currentYear = new Date().getFullYear();
-    return Array.from({ length: 82 }, (_, i) => currentYear - 18 - i);
-  }, []);
-
-  const handleYearChange = useCallback(
-    (selectedYear: string) => {
-      const newYear = Number.parseInt(selectedYear, 10);
-      const newDate = new Date(newYear, calendarDate.getMonth(), 1);
-      setCalendarDate(newDate);
-    },
-    [calendarDate]
-  );
-
-  const isDateInRange = useCallback(
-    (date: Date) => {
-      return !isAfter(date, maxDate) && !isBefore(date, minDate);
-    },
-    [maxDate, minDate]
-  );
-
-  const handleDateSelect = (newDate: Date | undefined) => {
-    if (newDate && isDateInRange(newDate)) {
-      setDate(newDate);
-      setCalendarDate(newDate);
-    } else if (newDate) {
-      toast({
-        title: "Invalid date",
-        description: "Please select a date between 18 and 99 years ago.",
-        variant: "destructive",
-      });
+    // Convert to Firebase Timestamp when a date is selected
+    if (newDate) {
+      const timestamp = Timestamp.fromDate(newDate);
+      setFirestoreTimestamp(timestamp);
     } else {
-      setDate(undefined);
+      setFirestoreTimestamp(null);
     }
   };
 
   // Handle Profile Update
   const handleProfileUpdate = async () => {
-    if (!username || !gender || !date || !country) {
+    if (!username || !gender || !firestoreTimestamp || !country) {
       toast({
-        title: "Invalid Profile",
+        title: "Incomplete Profile",
         description: "Please fill in all the fields.",
         variant: "destructive",
       });
@@ -134,7 +103,7 @@ export const SettingsDrawer = () => {
         await updateDoc(userRef, {
           username: trimmedUsername,
           gender,
-          dob: date,
+          dob: firestoreTimestamp,
           country,
         });
         const data = await getDoc(userRef);
@@ -235,52 +204,8 @@ export const SettingsDrawer = () => {
           </div>
           <div className="grid w-full max-w-sm items-center gap-1.5">
             <Label htmlFor="dob">Date of Birth</Label>
-            <Popover>
-              <PopoverTrigger asChild>
-                <Button
-                  variant={"outline"}
-                  className={cn(
-                    "w-full justify-start text-left font-normal",
-                    "text-muted-foreground"
-                  )}
-                >
-                  <CalendarIcon className="mr-2 h-4 w-4" />
-                  {date ? (
-                    format(date, "PPP")
-                  ) : (
-                    <span className="text-muted-foreground">Date of Birth</span>
-                  )}
-                </Button>
-              </PopoverTrigger>
-              <PopoverContent className="w-auto p-0" align="start">
-                <div className="flex items-center justify-between p-2 border-b">
-                  <Select
-                    value={calendarDate.getFullYear().toString()}
-                    onValueChange={handleYearChange}
-                  >
-                    <SelectTrigger className="w-[100px]">
-                      <SelectValue placeholder="Year" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {years.map((y) => (
-                        <SelectItem key={y} value={y.toString()}>
-                          {y}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-                <Calendar
-                  mode="single"
-                  selected={date}
-                  onSelect={handleDateSelect}
-                  month={calendarDate}
-                  onMonthChange={setCalendarDate}
-                  disabled={(date) => !isDateInRange(date)}
-                  initialFocus
-                />
-              </PopoverContent>
-            </Popover>
+            {/* TODO: Date of Birth Component */}
+            <DatePicker date={date} onDateChange={handleDateChange} />
           </div>
           {/* Country */}
           <div className="grid w-full max-w-sm items-center gap-1.5">
@@ -412,8 +337,9 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { accessories, body, face, facialHair, hair } from "./avatar";
-import { doc, getDoc, updateDoc } from "firebase/firestore";
+import { doc, getDoc, Timestamp, updateDoc } from "firebase/firestore";
 import { db } from "@/firebase/config";
+import { DatePicker } from "@/components/ui/custom-date-picker";
 
 export const Hero = () => {
   return (
@@ -512,7 +438,7 @@ export const AvatarDialog = ({ children }: { children: ReactNode }) => {
       !facialHairState
     ) {
       toast({
-        title: "Invalid Avatar",
+        title: "Incomplete Avatar",
         description: "Please select all the avatar components.",
         variant: "destructive",
       });
