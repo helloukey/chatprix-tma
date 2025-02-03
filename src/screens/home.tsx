@@ -83,13 +83,14 @@ export const SettingsDrawer = () => {
       return;
     }
 
-    const trimmedUsername = username.trim();
+    const pattern = /^[a-z][a-z0-9]{2,7}$/gm;
 
-    // Username must be between 3 and 8 characters
-    if (trimmedUsername.length < 3 || trimmedUsername.length > 8) {
+    // Username must start with an alphabet, be 3-8 characters long, and contain only alphabets and numbers
+    if (!pattern.test(username)) {
       toast({
         title: "Invalid Username",
-        description: "Username must be between 3 and 8 characters.",
+        description:
+          "Username must be between 3 and 8 characters, start with a lowercase letter, and contain only lowercase letters and numbers (no spaces).",
         variant: "destructive",
       });
       return;
@@ -101,7 +102,7 @@ export const SettingsDrawer = () => {
         setUpdateLoading(true);
         const userRef = doc(db, "users", userId);
         await updateDoc(userRef, {
-          username: trimmedUsername,
+          username: username,
           gender,
           dob: firestoreTimestamp,
           country,
