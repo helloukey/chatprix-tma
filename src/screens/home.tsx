@@ -362,7 +362,7 @@ export const Hero = () => {
         } else {
           toast({
             title: "Error",
-            description: "Failed to search for partner. Please try again.",
+            description: "Failed to request for partner. Please try again.",
             variant: "destructive",
           });
         }
