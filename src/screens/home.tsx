@@ -343,6 +343,7 @@ import { DatePicker } from "@/components/ui/custom-date-picker";
 import { fromUnixTime } from "date-fns";
 import { updateQueue } from "@/firebase/queue";
 import { useRouter } from "next/navigation";
+import { deleteActiveBatch } from "@/firebase/active";
 
 export const Hero = () => {
   const { user, userId, loading } = useUserState((state) => state);
@@ -355,6 +356,9 @@ export const Hero = () => {
     if (user && userId) {
       try {
         setSearchLoading(true);
+        // Delete active batch
+        await deleteActiveBatch(userId);
+        // Update queue
         const result = await updateQueue(user, userId);
         if (result) {
           // Navigate to search screen
