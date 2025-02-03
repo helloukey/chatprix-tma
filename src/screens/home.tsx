@@ -1,5 +1,5 @@
 import Peep from "react-peeps";
-import { Button, buttonVariants } from "@/components/ui/button";
+import { Button } from "@/components/ui/button";
 import {
   Command,
   CommandEmpty,
@@ -327,7 +327,6 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import Link from "next/link";
 import { Particles } from "@/components/ui/particles";
 import {
   Dialog,
@@ -342,8 +341,43 @@ import { doc, getDoc, Timestamp, updateDoc } from "firebase/firestore";
 import { db } from "@/firebase/config";
 import { DatePicker } from "@/components/ui/custom-date-picker";
 import { fromUnixTime } from "date-fns";
+import { updateQueue } from "@/firebase/queue";
+import { redirect } from "next/navigation";
 
 export const Hero = () => {
+  const { user, userId, loading } = useUserState((state) => state);
+  const { toast } = useToast();
+  const [searchLoading, setSearchLoading] = useState(false);
+
+  // Handle Search
+  const handleSearch = async () => {
+    if (user && userId) {
+      try {
+        setSearchLoading(true);
+        const result = await updateQueue(user, userId);
+        if (result) {
+          // Navigate to search screen
+          redirect("/search");
+        } else {
+          toast({
+            title: "Error",
+            description: "Failed to search for partner. Please try again.",
+            variant: "destructive",
+          });
+        }
+      } catch (error) {
+        console.error("Error searching for partner", error);
+        toast({
+          title: "Error",
+          description: "Failed to search for partner. Please try again.",
+          variant: "destructive",
+        });
+      } finally {
+        setSearchLoading(false);
+      }
+    }
+  };
+
   return (
     <div className="w-full flex flex-col items-center gap-4 my-8">
       <Image
@@ -359,15 +393,16 @@ export const Hero = () => {
       </p>
       <div className="w-full flex gap-2">
         <AlertDialogWrapper />
-        <Link
-          href="/search"
-          className={buttonVariants({
-            variant: "default",
-            className: "w-full",
-          })}
+        <Button
+          className="w-full"
+          onClick={handleSearch}
+          disabled={searchLoading || loading}
         >
+          {searchLoading || loading ? (
+            <Loader2 className="animate-spin" />
+          ) : null}
           <Search /> Search
-        </Link>
+        </Button>
       </div>
     </div>
   );
