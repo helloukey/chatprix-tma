@@ -129,7 +129,7 @@ export const SettingsDrawer = () => {
     if (user) {
       setUsername(user.username);
       setGender(user?.gender ? user.gender : "");
-      setDate(user?.dob ? user.dob : undefined);
+      setDate(user?.dob ? fromUnixTime(user.dob.seconds) : undefined);
       setCountry(user?.country ? user.country : "");
     }
   }, [user]);
@@ -340,6 +340,7 @@ import { accessories, body, face, facialHair, hair } from "./avatar";
 import { doc, getDoc, Timestamp, updateDoc } from "firebase/firestore";
 import { db } from "@/firebase/config";
 import { DatePicker } from "@/components/ui/custom-date-picker";
+import { fromUnixTime } from "date-fns";
 
 export const Hero = () => {
   return (
