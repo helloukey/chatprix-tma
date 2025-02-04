@@ -147,57 +147,24 @@ export const ChatBubble: FC<ChatBubbleProps> = ({ message, isCurrentUser }) => {
 };
 
 interface Message {
-  id: number;
+  timestamp: {
+    seconds: number;
+    nanoseconds: number;
+  };
   text: string;
-  isCurrentUser: boolean;
+  sender: string;
 }
 
-export const Messages = () => {
-  const [messages] = useState<Message[]>([
-    { id: 1, text: "Hello! How can I help you today?", isCurrentUser: false },
-    {
-      id: 2,
-      text: "Hi! I have a question about my order.",
-      isCurrentUser: true,
-    },
-    {
-      id: 3,
-      text: "Sure, I'd be happy to help. What's your order number?",
-      isCurrentUser: false,
-    },
-    {
-      id: 4,
-      text: "Sure, I'd be happy to help. What's your order number?",
-      isCurrentUser: false,
-    },
-    {
-      id: 5,
-      text: "Sure, I'd be happy to help. What's your order number?",
-      isCurrentUser: false,
-    },
-    {
-      id: 6,
-      text: "Sure, I'd be happy to help. What's your order number?",
-      isCurrentUser: false,
-    },
-    {
-      id: 7,
-      text: "Sure, I'd be happy to help. What's your order number?",
-      isCurrentUser: false,
-    },
-    {
-      id: 8,
-      text: "Sure, I'd be happy to help. What's your order number?",
-      isCurrentUser: false,
-    },
-  ]);
+export const Messages = ({ messages }: { messages: Message[] }) => {
+  const { userId } = useUserState((state) => state);
+
   return (
     <div className="w-full h-full max-h-[75%] space-y-4 my-4 px-4 text-sm overflow-y-auto">
       {messages.map((message) => (
         <ChatBubble
-          key={message.id}
+          key={message.timestamp.seconds.toString()}
           message={message.text}
-          isCurrentUser={message.isCurrentUser}
+          isCurrentUser={message.sender == userId}
         />
       ))}
     </div>
