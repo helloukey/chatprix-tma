@@ -40,7 +40,7 @@ export default function Chat({ params }: { params: { id: string } }) {
     <div className="w-full h-full flex flex-col justify-between items-center">
       <Header chatId={chatId} chat={chat} />
       <Messages messages={chat ? chat.messages : []} />
-      <Action />
+      <Action chatId={chatId} />
     </div>
   );
 }

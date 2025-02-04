@@ -17,7 +17,14 @@ import { Textarea } from "@/components/ui/textarea";
 import { db } from "@/firebase/config";
 import { cn } from "@/lib/utils";
 import { useUserState } from "@/zustand/useStore";
-import { deleteDoc, doc, DocumentData } from "firebase/firestore";
+import {
+  arrayUnion,
+  deleteDoc,
+  doc,
+  DocumentData,
+  Timestamp,
+  updateDoc,
+} from "firebase/firestore";
 import { SendHorizonal } from "lucide-react";
 import { FC, useEffect, useState } from "react";
 import Peep from "react-peeps";
@@ -28,8 +35,9 @@ type Props = {
 };
 
 export const Header = ({ chatId, chat }: Props) => {
-  const { setLoading, loading, userId } = useUserState((state) => state);
+  const { userId } = useUserState((state) => state);
   const [matchedUser, setMatchedUser] = useState<DocumentData | null>(null);
+  const [loading, setLoading] = useState(false);
 
   // Handle End Chat
   const handleEndChat = async () => {
@@ -162,7 +170,7 @@ export const Messages = ({ messages }: { messages: Message[] }) => {
     <div className="w-full h-full max-h-[75%] space-y-4 my-4 px-4 text-sm overflow-y-auto">
       {messages.map((message) => (
         <ChatBubble
-          key={message.timestamp.seconds.toString()}
+          key={message.timestamp.seconds}
           message={message.text}
           isCurrentUser={message.sender == userId}
         />
@@ -171,7 +179,33 @@ export const Messages = ({ messages }: { messages: Message[] }) => {
   );
 };
 
-export const Action = () => {
+export const Action = ({ chatId }: { chatId: string | null }) => {
+  const { userId } = useUserState((state) => state);
+  const [message, setMessage] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  // Handle Send Message
+  const handleSendMessage = async () => {
+    if (!chatId || !userId || !message) return;
+
+    try {
+      setLoading(true);
+      // Send message to chat
+      await updateDoc(doc(db, "active", chatId), {
+        messages: arrayUnion({
+          timestamp: Timestamp.now().toString(),
+          text: message,
+          sender: userId,
+        }),
+      });
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setLoading(false);
+      setMessage("");
+    }
+  };
+
   return (
     <div className="w-full flex gap-2 items-center p-4">
       <Textarea
@@ -182,8 +216,15 @@ export const Action = () => {
           minHeight: "40px", // Ensure minimum height is always 40px
           lineHeight: "24px", // Adjust line height for better text alignment
         }}
+        value={message}
+        onChange={(e) => setMessage(e.target.value)}
       />
-      <Button variant="outline" size="default">
+      <Button
+        variant="outline"
+        size="default"
+        disabled={loading || !chatId || !userId}
+        onClick={handleSendMessage}
+      >
         <SendHorizonal />
       </Button>
     </div>
