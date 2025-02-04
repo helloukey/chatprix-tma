@@ -2,7 +2,7 @@
 
 import { Button } from "@/components/ui/button";
 import { db } from "@/firebase/config";
-import { findMatchFromQueue } from "@/firebase/queue";
+import { findMatchFromQueue, removeFromQueue } from "@/firebase/queue";
 import { useToast } from "@/hooks/use-toast";
 import { ParticlesWrapper } from "@/screens/home";
 import { LottieSearch } from "@/screens/search";
@@ -24,6 +24,20 @@ export default function Search() {
   const { toast } = useToast();
   const router = useRouter();
   const [trigger, setTrigger] = useState(false);
+
+  // Handle cancel search
+  const handleCancel = async () => {
+    if (userId) {
+      try {
+        await removeFromQueue(userId);
+        router.push("/");
+      } catch (error) {
+        console.error(error);
+      }
+    } else {
+      router.push("/");
+    }
+  };
 
   // Find match and create a active chat
   useEffect(() => {
@@ -76,7 +90,7 @@ export default function Search() {
   // Trigger when there is a change in queues collection
   useEffect(() => {
     if (!userId) return;
-    
+
     const queuesRef = collection(db, "queues");
     const q = query(queuesRef, where(documentId(), "!=", userId));
     const unsub = onSnapshot(q, () => {
@@ -93,7 +107,7 @@ export default function Search() {
         <p className="text-muted-foreground text-center mb-8">
           Searching for Partner...
         </p>
-        <Button className="w-full" disabled={loading}>
+        <Button className="w-full" disabled={loading} onClick={handleCancel}>
           Cancel
         </Button>
       </div>

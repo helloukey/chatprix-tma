@@ -1,6 +1,7 @@
 import {
   addDoc,
   collection,
+  deleteDoc,
   doc,
   DocumentData,
   documentId,
@@ -72,4 +73,13 @@ const findMatchFromQueue = async (userId: string, user: DocumentData) => {
   }
 };
 
-export { updateQueue, findMatchFromQueue };
+const removeFromQueue = async (userId: string) => {
+  try {
+    await deleteDoc(doc(db, "queues", userId));
+    return true;
+  } catch (error) {
+    console.error("Error removing from queue: ", error);
+  }
+};
+
+export { updateQueue, findMatchFromQueue, removeFromQueue };
