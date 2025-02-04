@@ -49,6 +49,8 @@ export default function Search() {
 
   // Check for changes in active chat is user is already in chat
   useEffect(() => {
+    if (!userId) return;
+
     const activeRef = collection(db, "active");
     const q = query(
       activeRef,
@@ -73,6 +75,8 @@ export default function Search() {
 
   // Trigger when there is a change in queues collection
   useEffect(() => {
+    if (!userId) return;
+    
     const queuesRef = collection(db, "queues");
     const q = query(queuesRef, where(documentId(), "!=", userId));
     const unsub = onSnapshot(q, () => {
