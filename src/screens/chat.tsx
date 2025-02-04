@@ -14,26 +14,87 @@ import {
 import { Button, buttonVariants } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
+import { db } from "@/firebase/config";
 import { cn } from "@/lib/utils";
+import { useUserState } from "@/zustand/useStore";
+import { deleteDoc, doc, DocumentData } from "firebase/firestore";
 import { SendHorizonal } from "lucide-react";
-import { FC, useState } from "react";
+import { FC, useEffect, useState } from "react";
+import Peep from "react-peeps";
 
-export const Header = () => {
+type Props = {
+  chatId: string | null;
+  chat: DocumentData | null;
+};
+
+export const Header = ({ chatId, chat }: Props) => {
+  const { setLoading, loading, userId } = useUserState((state) => state);
+  const [matchedUser, setMatchedUser] = useState<DocumentData | null>(null);
+
+  // Handle End Chat
+  const handleEndChat = async () => {
+    if (!userId || !chatId || !matchedUser) return;
+
+    try {
+      setLoading(true);
+      await deleteDoc(doc(db, "active", chatId));
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Update Matched User
+  useEffect(() => {
+    if (!chat || !userId) return;
+
+    if (chat.user1 == userId) {
+      setMatchedUser(chat.user2profile);
+    } else {
+      setMatchedUser(chat.user1profile);
+    }
+  }, [chat, userId]);
+
   return (
     <div className="w-full flex items-center justify-between p-4 border-b">
       <div className="flex items-center gap-2">
-        {/* <Avatar>
-          <AvatarImage src="https://github.com/shadcn.png" />
-          <AvatarFallback>CP</AvatarFallback>
-        </Avatar> */}
+        <div
+          className="w-fit rounded-full"
+          style={{
+            backgroundColor: matchedUser
+              ? matchedUser.avatar.background
+              : "white",
+          }}
+        >
+          <Peep
+            style={{
+              width: 48,
+              height: 48,
+              justifyContent: "center",
+              alignSelf: "center",
+            }}
+            accessory={matchedUser ? matchedUser.avatar.accessories : ""}
+            body={matchedUser ? matchedUser.avatar.body : ""}
+            face={matchedUser ? matchedUser.avatar.face : ""}
+            hair={matchedUser ? matchedUser.avatar.hair : ""}
+            facialHair={matchedUser ? matchedUser.avatar.facialHair : ""}
+            strokeColor="black"
+            backgroundColor="white"
+          />
+        </div>
         <p className="text-sm">
-          JohnDoe{" "}
-          <span className="text-xs text-muted-foreground">typing...</span>
+          {matchedUser ? matchedUser.username : "Fetching..."}{" "}
+          <span className="text-xs text-muted-foreground"></span>
         </p>
       </div>
       <AlertDialog>
         <AlertDialogTrigger asChild>
-          <Button variant="destructive" size="sm">
+          <Button
+            variant="destructive"
+            size="sm"
+            disabled={loading || !matchedUser}
+          >
             End
           </Button>
         </AlertDialogTrigger>
@@ -48,6 +109,8 @@ export const Header = () => {
           <AlertDialogFooter className="gap-2">
             <AlertDialogAction
               className={buttonVariants({ variant: "destructive" })}
+              disabled={loading || !matchedUser}
+              onClick={handleEndChat}
             >
               End this chat
             </AlertDialogAction>
