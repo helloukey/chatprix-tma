@@ -2,7 +2,9 @@
 
 import { Action, Header, Messages } from "@/screens/chat";
 
-export default function Chat() {
+export default function Chat({ params }: { params: { id: string } }) {
+  console.log(params);
+
   return (
     <div className="w-full h-full flex flex-col justify-between items-center">
       <Header />
