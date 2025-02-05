@@ -1,5 +1,6 @@
 import {
   addDoc,
+  and,
   collection,
   deleteDoc,
   doc,
@@ -60,17 +61,25 @@ const findMatchFromQueue = async (userId: string, user: DocumentData) => {
     const activeRef = collection(db, "active");
     const activeQuery = query(
       activeRef,
-      or(
-        where("user1", "==", userId),
-        where("user2", "==", userId),
-        where("user1", "==", matchId),
-        where("user2", "==", matchId)
+      and(
+        or(where("user1", "==", userId), where("user2", "==", userId)),
+        or(where("user1", "==", matchId), where("user2", "==", matchId))
       )
     );
 
     const activeSnapshot = await getDocs(activeQuery);
     if (!activeSnapshot.empty) {
       return activeSnapshot.docs[0].id;
+    }
+
+    // Check if single active chat exists for user
+    const singleActiveQuery = query(
+      activeRef,
+      or(where("user1", "==", userId), where("user2", "==", userId))
+    );
+    const singleActiveSnapshot = await getDocs(singleActiveQuery);
+    if (!singleActiveSnapshot.empty) {
+      return singleActiveSnapshot.docs[0].id;
     }
 
     // Create a chat
