@@ -56,8 +56,24 @@ const findMatchFromQueue = async (userId: string, user: DocumentData) => {
     });
     await batch.commit();
 
-    // Create a chat
+    // Check if match is already in chat
     const activeRef = collection(db, "active");
+    const activeQuery = query(
+      activeRef,
+      or(
+        where("user1", "==", userId),
+        where("user2", "==", userId),
+        where("user1", "==", matchId),
+        where("user2", "==", matchId)
+      )
+    );
+
+    const activeSnapshot = await getDocs(activeQuery);
+    if (!activeSnapshot.empty) {
+      return activeSnapshot.docs[0].id;
+    }
+
+    // Create a chat
     const chatDocument = await addDoc(activeRef, {
       user1: userId,
       user2: matchId,
