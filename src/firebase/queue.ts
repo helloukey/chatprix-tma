@@ -29,6 +29,17 @@ const updateQueue = async (user: DocumentData, userId: string) => {
 
 const findMatchFromQueue = async (userId: string, user: DocumentData) => {
   try {
+    // Check if single active chat exists for user
+    const activeRef = collection(db, "active");
+    const singleActiveQuery = query(
+      activeRef,
+      or(where("user1", "==", userId), where("user2", "==", userId))
+    );
+    const singleActiveSnapshot = await getDocs(singleActiveQuery);
+    if (!singleActiveSnapshot.empty) {
+      return singleActiveSnapshot.docs[0].id;
+    }
+
     // Find a match from the queue
     const queuesRef = collection(db, "queues");
     const q = query(queuesRef, where(documentId(), "!=", userId));
@@ -58,7 +69,6 @@ const findMatchFromQueue = async (userId: string, user: DocumentData) => {
     await batch.commit();
 
     // Check if match is already in chat
-    const activeRef = collection(db, "active");
     const activeQuery = query(
       activeRef,
       and(
@@ -70,16 +80,6 @@ const findMatchFromQueue = async (userId: string, user: DocumentData) => {
     const activeSnapshot = await getDocs(activeQuery);
     if (!activeSnapshot.empty) {
       return activeSnapshot.docs[0].id;
-    }
-
-    // Check if single active chat exists for user
-    const singleActiveQuery = query(
-      activeRef,
-      or(where("user1", "==", userId), where("user2", "==", userId))
-    );
-    const singleActiveSnapshot = await getDocs(singleActiveQuery);
-    if (!singleActiveSnapshot.empty) {
-      return singleActiveSnapshot.docs[0].id;
     }
 
     // Create a chat
