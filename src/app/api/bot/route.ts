@@ -19,7 +19,7 @@ export async function POST() {
   const price = [
     {
       label: "USD",
-      amount: 499,
+      amount: 249,
     },
   ];
 
