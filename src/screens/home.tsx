@@ -27,7 +27,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
-import { cn, countries } from "@/lib/utils";
+import { cn, countries, getInvoiceLink } from "@/lib/utils";
 import { DialogTitle } from "@radix-ui/react-dialog";
 import { Popover } from "@radix-ui/react-popover";
 import {
@@ -281,6 +281,31 @@ export const SettingsDrawer = () => {
 };
 
 export const AlertDialogWrapper = () => {
+  const { toast } = useToast();
+
+  // Handle PRO Upgrade
+  const handlePRO = async () => {
+    try {
+      const result = await getInvoiceLink();
+      if (!result) {
+        toast({
+          title: "Oops!",
+          description: "Failed to upgrade to PRO. Please try again.",
+          variant: "destructive",
+        });
+        return;
+      }
+      invoice.open(result, "url").then(res => console.log(res));
+    } catch (error) {
+      console.log(error);
+      toast({
+        title: "Oops!",
+        description: "Failed to upgrade to PRO. Please try again.",
+        variant: "destructive",
+      });
+    }
+  };
+
   return (
     <AlertDialog>
       <AlertDialogTrigger asChild>
@@ -302,7 +327,7 @@ export const AlertDialogWrapper = () => {
             <LockOpen />
             Unlock with Ad
           </Button>
-          <Button className="w-full">
+          <Button className="w-full" onClick={handlePRO}>
             <Gem /> Upgrade to PRO
           </Button>
         </div>
@@ -344,6 +369,7 @@ import { fromUnixTime } from "date-fns";
 import { updateQueue } from "@/firebase/queue";
 import { useRouter } from "next/navigation";
 import { deleteActiveBatch } from "@/firebase/active";
+import { invoice } from "@telegram-apps/sdk-react";
 
 export const Hero = () => {
   const { user, userId, loading } = useUserState((state) => state);
