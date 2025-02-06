@@ -13,7 +13,7 @@ export async function POST() {
 
   const title = "Chatprix PRO";
   const description = "Get Chatprix PRO for a month";
-  const payload = "";
+  const payload = "chatprix_pro_monthly";
   const provider_token = "";
   const currency = "USD";
   const price = [
