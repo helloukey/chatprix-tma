@@ -27,7 +27,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
-import { cn, countries, getInvoiceLink } from "@/lib/utils";
+import { ads, cn, countries, getInvoiceLink } from "@/lib/utils";
 import { DialogTitle } from "@radix-ui/react-dialog";
 import { Popover } from "@radix-ui/react-popover";
 import {
@@ -281,6 +281,7 @@ export const SettingsDrawer = () => {
 };
 
 export const AlertDialogWrapper = () => {
+  const showAd = useMountAd({ id: ads.filter });
   const { toast } = useToast();
   const [loading, setLoading] = useState(false);
 
@@ -298,6 +299,7 @@ export const AlertDialogWrapper = () => {
         return;
       }
       const status = await invoice.open(result, "url");
+      // status === "paid"
       console.log(status);
     } catch (error) {
       console.log(error);
@@ -328,7 +330,7 @@ export const AlertDialogWrapper = () => {
         </AlertDialogHeader>
         {/* Buttons Container */}
         <div className="w-full flex flex-col gap-2 my-8">
-          <Button variant="secondary" className="w-full">
+          <Button variant="secondary" className="w-full" onClick={showAd}>
             <LockOpen />
             Unlock with Ad
           </Button>
@@ -376,6 +378,7 @@ import { updateQueue } from "@/firebase/queue";
 import { useRouter } from "next/navigation";
 import { deleteActiveBatch } from "@/firebase/active";
 import { invoice } from "@telegram-apps/sdk-react";
+import { useMountAd } from "@/hooks/use-mount-ad";
 
 export const Hero = () => {
   const { user, userId, loading } = useUserState((state) => state);

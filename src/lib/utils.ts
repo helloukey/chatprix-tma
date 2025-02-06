@@ -244,3 +244,7 @@ export const getInvoiceLink = async () => {
     console.error(error);
   }
 };
+
+export const ads = {
+  filter: "8905637",
+};
