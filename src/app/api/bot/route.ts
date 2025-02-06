@@ -18,8 +18,8 @@ export async function POST() {
   const currency = "USD";
   const price = [
     {
-      label: "Chatprix PRO",
-      amount: 4.99,
+      label: "USD",
+      amount: 499,
     },
   ];
 
