@@ -229,3 +229,18 @@ export const generateAvatar = () => {
     background: "#ffffff",
   };
 };
+
+export const getInvoiceLink = async () => {
+  try {
+    const result = await fetch("/api/bot", {
+      method: "POST",
+    });
+    const data = await result.json();
+    if (!data.success) {
+      return null;
+    }
+    return data.invoiceLink;
+  } catch (error) {
+    console.error(error);
+  }
+};
