@@ -15,7 +15,7 @@ export async function POST() {
   const description = "Get Chatprix PRO for a month";
   const payload = "chatprix_pro_monthly";
   const provider_token = "";
-  const currency = "USD";
+  const currency = "XTR";
   const price = [
     {
       label: "USD",
