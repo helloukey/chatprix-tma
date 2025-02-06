@@ -282,10 +282,12 @@ export const SettingsDrawer = () => {
 
 export const AlertDialogWrapper = () => {
   const { toast } = useToast();
+  const [loading, setLoading] = useState(false);
 
   // Handle PRO Upgrade
   const handlePRO = async () => {
     try {
+      setLoading(true);
       const result = await getInvoiceLink();
       if (!result) {
         toast({
@@ -295,7 +297,8 @@ export const AlertDialogWrapper = () => {
         });
         return;
       }
-      invoice.open(result, "url").then(res => console.log(res));
+      const status = await invoice.open(result, "url");
+      console.log(status);
     } catch (error) {
       console.log(error);
       toast({
@@ -303,6 +306,8 @@ export const AlertDialogWrapper = () => {
         description: "Failed to upgrade to PRO. Please try again.",
         variant: "destructive",
       });
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -327,8 +332,9 @@ export const AlertDialogWrapper = () => {
             <LockOpen />
             Unlock with Ad
           </Button>
-          <Button className="w-full" onClick={handlePRO}>
-            <Gem /> Upgrade to PRO
+          <Button className="w-full" onClick={handlePRO} disabled={loading}>
+            {loading ? <Loader2 className="animate-spin" /> : <Gem />}
+            {loading ? "Processing..." : "Upgrade to PRO"}
           </Button>
         </div>
         <AlertDialogFooter className="flex-row justify-end">
