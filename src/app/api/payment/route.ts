@@ -16,6 +16,7 @@ bot.on("pre_checkout_query", async (ctx) => {
 
 bot.on("message:successful_payment", async (ctx) => {
   await ctx.reply("Thank you for subscribing to Chatprix PRO! 🎉" + ctx);
+  console.log(ctx);
 });
 
 export const POST = webhookCallback(bot, "std/http");
