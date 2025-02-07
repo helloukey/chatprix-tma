@@ -11,7 +11,7 @@ if (!token)
 
 const bot = new Bot(token);
 bot.on(":successful_payment", async (ctx) => {
-  console.log(ctx);
+  await ctx.reply("Thank you for subscribing to Chatprix PRO! 🎉" + ctx);
 });
 
 export const POST = webhookCallback(bot, "std/http");
