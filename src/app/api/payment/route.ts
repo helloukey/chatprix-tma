@@ -10,6 +10,10 @@ if (!token)
   throw new Error("TELEGRAM_BOT_TOKEN environment variable not found.");
 
 const bot = new Bot(token);
+bot.on("pre_checkout_query", async (ctx) => {
+  await ctx.answerPreCheckoutQuery(true);
+});
+
 bot.on("message:successful_payment", async (ctx) => {
   await ctx.reply("Thank you for subscribing to Chatprix PRO! 🎉" + ctx);
 });
