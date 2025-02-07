@@ -16,12 +16,13 @@ export async function POST() {
   const payload = "chatprix_pro_monthly";
   const provider_token = "";
   const currency = "XTR";
-  const price = [
+  const prices = [
     {
       label: "Chatprix PRO Monthly",
       amount: 249,
     },
   ];
+  const subscription_period = 2592000;
 
   try {
     const invoiceLink = await bot.api.createInvoiceLink(
@@ -30,7 +31,8 @@ export async function POST() {
       payload,
       provider_token,
       currency,
-      price
+      prices,
+      { subscription_period }
     );
 
     return NextResponse.json({ success: true, invoiceLink }, { status: 200 });
