@@ -15,7 +15,7 @@ export function ThemeProvider({
   children,
   ...props
 }: ComponentProps<typeof NextThemesProvider>) {
-  const { setLoading, setUser, setUserId } = useUserState((state) => state);
+  const { setLoading, setUser, setUserId, setIsPro } = useUserState((state) => state);
 
   // Perform telegram check
   const performTelegramCheck = useCallback(async () => {
@@ -23,14 +23,14 @@ export function ThemeProvider({
       setLoading(true);
       const { tgWebAppData } = retrieveLaunchParams();
       if (tgWebAppData && tgWebAppData.user) {
-        checkAndUpdateUser(tgWebAppData.user.id, setUser, setUserId);
+        checkAndUpdateUser(tgWebAppData.user.id, setUser, setUserId, setIsPro);
       }
     } catch (error) {
       console.log(error);
     } finally {
       setLoading(false);
     }
-  }, [setLoading, setUser, setUserId]);
+  }, [setLoading, setUser, setUserId, setIsPro]);
 
   useEffect(() => {
     // Init telegram sdk
