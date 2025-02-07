@@ -23,7 +23,6 @@ bot.on("message:successful_payment", async (ctx) => {
     invoice_payload: ctx.message.successful_payment.invoice_payload,
     is_first_recurring: ctx.message.successful_payment.is_first_recurring,
     is_recurring: ctx.message.successful_payment.is_recurring,
-    order_info: ctx.message.successful_payment.order_info,
     provider_payment_charge_id:
       ctx.message.successful_payment.provider_payment_charge_id,
     telegram_payment_charge_id:
