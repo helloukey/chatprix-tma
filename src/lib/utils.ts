@@ -248,3 +248,10 @@ export const getInvoiceLink = async () => {
 export const ads = {
   filter: "8905637",
 };
+
+export const isSubscriptionValid = (unixTimestamp: number) => {
+  const startTime = Math.floor(unixTimestamp);
+  const THIRTY_DAYS = 30 * 24 * 60 * 60 * 1000; // 30 days in milliseconds
+  const expirationDate = startTime * 1000 + THIRTY_DAYS; // Convert Unix to milliseconds and add 30 days
+  return Date.now() < expirationDate; // Check if current time is before expiration
+};
