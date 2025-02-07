@@ -282,6 +282,7 @@ export const SettingsDrawer = () => {
 
 export const AlertDialogWrapper = () => {
   const showAd = useMountAd({ id: ads.filter });
+  const { setIsPro } = useUserState((state) => state);
   const { toast } = useToast();
   const [loading, setLoading] = useState(false);
 
@@ -299,8 +300,13 @@ export const AlertDialogWrapper = () => {
         return;
       }
       const status = await invoice.open(result, "url");
-      // status === "paid"
-      console.log(status);
+      if (status === "paid") {
+        setIsPro(true);
+        toast({
+          title: "Success!",
+          description: "You have successfully upgraded to PRO.",
+        });
+      }
     } catch (error) {
       console.log(error);
       toast({
