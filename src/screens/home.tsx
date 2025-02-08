@@ -324,7 +324,7 @@ export const AlertDialogWrapper = () => {
 
   // Handle Filter Dialog
   const handleFilterDialog = () => {
-    if (isPro) {
+    if (!isPro) {
       setFilterOpen(true);
     } else {
       setFilterDialogOpen(true);
