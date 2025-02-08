@@ -261,7 +261,7 @@ export const SettingsDrawer = () => {
             </Popover>
           </div>
         </div>
-        <DrawerFooter className="flex-row">
+        <DrawerFooter className="flex-row mt-4">
           <DrawerClose asChild>
             <Button variant="outline" className="w-full">
               Cancel
@@ -787,8 +787,8 @@ export const FiltersDrawer = () => {
   return (
     <Drawer open={filterOpen} onOpenChange={setFilterOpen}>
       <DrawerContent>
-        <DrawerHeader className="justify-start">
-          <DrawerTitle>Search Preferences</DrawerTitle>
+        <DrawerHeader>
+          <DrawerTitle>Preferences</DrawerTitle>
         </DrawerHeader>
         <div className="w-full flex flex-col justify-center gap-4 px-4">
           <div className="grid w-full max-w-sm items-center gap-1.5">
@@ -869,7 +869,7 @@ export const FiltersDrawer = () => {
             </Popover>
           </div>
         </div>
-        <DrawerFooter className="flex-row">
+        <DrawerFooter className="flex-row mt-4">
           <DrawerClose asChild>
             <Button variant="outline" className="w-full">
               Cancel
