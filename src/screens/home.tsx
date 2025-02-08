@@ -766,13 +766,14 @@ export const FiltersDrawer = () => {
             </Select>
           </div>
           <div className="grid w-full max-w-sm items-center gap-1.5">
-            <Label htmlFor="age">Age</Label>
+            <Label htmlFor="age">Age: {age[0]}-{age[1]}</Label>
             <Slider
               defaultValue={age}
               min={18}
               max={99}
               step={1}
               onValueChange={(value) => setAge(value)}
+              className="w-full mt-1.5"
             />
           </div>
         </div>
