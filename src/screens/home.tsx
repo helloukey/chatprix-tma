@@ -741,17 +741,46 @@ export const AvatarDialog = ({ children }: { children: ReactNode }) => {
 
 export const FiltersDrawer = () => {
   const mappedCountries = [{ label: "All", value: "all" }, ...countries];
-  const { filterOpen, setFilterOpen } = useUserState((state) => state);
+  const { filterOpen, setFilterOpen, userId } = useUserState((state) => state);
+  const { toast } = useToast();
   const [gender, setGender] = useState("all");
   const [age, setAge] = useState([18, 99]);
   const [country, setCountry] = useState("all");
   const [open, setOpen] = useState(false);
+  const [loading, setLoading] = useState(false);
+
+  // Handle Filters
+  const handleFilters = async () => {
+    if (!userId) return;
+
+    try {
+      setLoading(true);
+      const userRef = doc(db, "users", userId);
+      await updateDoc(userRef, {
+        filters: {
+          gender: gender === "all" ? "" : gender,
+          age,
+          country: country === "all" ? "" : country,
+        },
+      });
+      setFilterOpen(false);
+    } catch (error) {
+      console.error("Error updating filters", error);
+      toast({
+        title: "Error",
+        description: "Failed to update filters. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <Drawer open={filterOpen} onOpenChange={setFilterOpen}>
       <DrawerContent>
         <DrawerHeader className="justify-start">
-          <DrawerTitle>Preferences</DrawerTitle>
+          <DrawerTitle>Search Preferences</DrawerTitle>
         </DrawerHeader>
         <div className="w-full flex flex-col justify-center gap-4 px-4">
           <div className="grid w-full max-w-sm items-center gap-1.5">
@@ -770,7 +799,7 @@ export const FiltersDrawer = () => {
           </div>
           <div className="grid w-full max-w-sm items-center gap-1.5">
             <Label htmlFor="age">
-              Age: {age[0]}-{age[1]}
+              Age: {age[0]}-{age[1]} yr
             </Label>
             <Slider
               defaultValue={age}
@@ -778,7 +807,6 @@ export const FiltersDrawer = () => {
               max={99}
               step={1}
               onValueChange={(value) => setAge(value)}
-              className="w-full mt-1.5"
             />
           </div>
           <div className="grid w-full max-w-sm items-center gap-1.5">
@@ -792,7 +820,8 @@ export const FiltersDrawer = () => {
                   className="w-full justify-between text-muted-foreground"
                 >
                   {country
-                    ? mappedCountries.find((data) => data.value === country)?.label
+                    ? mappedCountries.find((data) => data.value === country)
+                        ?.label
                     : "Select country..."}
                   <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 text-muted-foreground" />
                 </Button>
@@ -838,7 +867,9 @@ export const FiltersDrawer = () => {
               Cancel
             </Button>
           </DrawerClose>
-          <Button className="w-full">Submit</Button>
+          <Button className="w-full" disabled={loading} onClick={handleFilters}>
+            {loading ? "Saving..." : "Save Changes"}
+          </Button>
         </DrawerFooter>
       </DrawerContent>
     </Drawer>
