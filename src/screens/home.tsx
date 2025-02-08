@@ -228,7 +228,7 @@ export const SettingsDrawer = () => {
               </PopoverTrigger>
               <PopoverContent className="w-[200px] p-0">
                 <Command>
-                  <CommandInput placeholder="Search framework..." />
+                  <CommandInput placeholder="Search country..." />
                   <CommandList>
                     <CommandEmpty>No country found.</CommandEmpty>
                     <CommandGroup>
@@ -740,9 +740,12 @@ export const AvatarDialog = ({ children }: { children: ReactNode }) => {
 };
 
 export const FiltersDrawer = () => {
+  const mappedCountries = [{ label: "All", value: "all" }, ...countries];
   const { filterOpen, setFilterOpen } = useUserState((state) => state);
   const [gender, setGender] = useState("all");
   const [age, setAge] = useState([18, 99]);
+  const [country, setCountry] = useState("all");
+  const [open, setOpen] = useState(false);
 
   return (
     <Drawer open={filterOpen} onOpenChange={setFilterOpen}>
@@ -766,7 +769,9 @@ export const FiltersDrawer = () => {
             </Select>
           </div>
           <div className="grid w-full max-w-sm items-center gap-1.5">
-            <Label htmlFor="age">Age: {age[0]}-{age[1]}</Label>
+            <Label htmlFor="age">
+              Age: {age[0]}-{age[1]}
+            </Label>
             <Slider
               defaultValue={age}
               min={18}
@@ -775,6 +780,56 @@ export const FiltersDrawer = () => {
               onValueChange={(value) => setAge(value)}
               className="w-full mt-1.5"
             />
+          </div>
+          <div className="grid w-full max-w-sm items-center gap-1.5">
+            <Label htmlFor="email">Country</Label>
+            <Popover open={open} onOpenChange={setOpen}>
+              <PopoverTrigger asChild>
+                <Button
+                  variant="outline"
+                  role="combobox"
+                  aria-expanded={open}
+                  className="w-full justify-between text-muted-foreground"
+                >
+                  {country
+                    ? mappedCountries.find((data) => data.value === country)?.label
+                    : "Select country..."}
+                  <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 text-muted-foreground" />
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-[200px] p-0">
+                <Command>
+                  <CommandInput placeholder="Search country..." />
+                  <CommandList>
+                    <CommandEmpty>No country found.</CommandEmpty>
+                    <CommandGroup>
+                      {mappedCountries.map((data) => (
+                        <CommandItem
+                          key={data.value}
+                          value={data.value}
+                          onSelect={(currentValue) => {
+                            setCountry(
+                              currentValue === country ? "" : currentValue
+                            );
+                            setOpen(false);
+                          }}
+                        >
+                          <Check
+                            className={cn(
+                              "mr-2 h-4 w-4",
+                              country === data.value
+                                ? "opacity-100"
+                                : "opacity-0"
+                            )}
+                          />
+                          {data.label}
+                        </CommandItem>
+                      ))}
+                    </CommandGroup>
+                  </CommandList>
+                </Command>
+              </PopoverContent>
+            </Popover>
           </div>
         </div>
         <DrawerFooter className="flex-row">
