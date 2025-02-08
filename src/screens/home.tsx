@@ -332,6 +332,14 @@ export const AlertDialogWrapper = () => {
     }
   };
 
+  // Handle Show Ad
+  const handleShowAd = () => {
+    showAd().then(() => {
+      setFilterDialogOpen(false);
+      setFilterOpen(true);
+    });
+  };
+
   return (
     <AlertDialog open={filterDialogOpen} onOpenChange={setFilterDialogOpen}>
       <Button
@@ -351,7 +359,7 @@ export const AlertDialogWrapper = () => {
         </AlertDialogHeader>
         {/* Buttons Container */}
         <div className="w-full flex flex-col gap-2 my-8">
-          <Button variant="secondary" className="w-full" onClick={showAd}>
+          <Button variant="secondary" className="w-full" onClick={handleShowAd}>
             <LockOpen />
             Unlock with Ad
           </Button>
