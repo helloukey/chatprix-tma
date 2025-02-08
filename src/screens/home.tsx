@@ -12,7 +12,6 @@ import {
   Drawer,
   DrawerClose,
   DrawerContent,
-  DrawerDescription,
   DrawerFooter,
   DrawerHeader,
   DrawerTitle,
@@ -326,7 +325,7 @@ export const AlertDialogWrapper = () => {
 
   // Handle Filter Dialog
   const handleFilterDialog = () => {
-    if (isPro) {
+    if (!isPro) {
       setFilterOpen(true);
     } else {
       setFilterDialogOpen(true);
@@ -400,6 +399,7 @@ import { useRouter } from "next/navigation";
 import { deleteActiveBatch } from "@/firebase/active";
 import { invoice } from "@telegram-apps/sdk-react";
 import { useMountAd } from "@/hooks/use-mount-ad";
+import { Slider } from "@/components/ui/slider";
 
 export const Hero = () => {
   const { user, userId, loading } = useUserState((state) => state);
@@ -741,20 +741,48 @@ export const AvatarDialog = ({ children }: { children: ReactNode }) => {
 
 export const FiltersDrawer = () => {
   const { filterOpen, setFilterOpen } = useUserState((state) => state);
+  const [gender, setGender] = useState("all");
+  const [age, setAge] = useState([18, 99]);
 
   return (
     <Drawer open={filterOpen} onOpenChange={setFilterOpen}>
-      {/* <DrawerTrigger>Open</DrawerTrigger> */}
       <DrawerContent>
-        <DrawerHeader>
-          <DrawerTitle>Are you absolutely sure?</DrawerTitle>
-          <DrawerDescription>This action cannot be undone.</DrawerDescription>
+        <DrawerHeader className="justify-start">
+          <DrawerTitle>Preferences</DrawerTitle>
         </DrawerHeader>
-        <DrawerFooter>
-          <Button>Submit</Button>
-          <DrawerClose>
-            <Button variant="outline">Cancel</Button>
+        <div className="w-full flex flex-col justify-center gap-4 px-4">
+          <div className="grid w-full max-w-sm items-center gap-1.5">
+            <Label htmlFor="gender">Gender</Label>
+            <Select value={gender} onValueChange={setGender}>
+              <SelectTrigger className="w-full text-muted-foreground">
+                <SelectValue placeholder="Select Gender" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All</SelectItem>
+                <SelectItem value="male">Male</SelectItem>
+                <SelectItem value="female">Female</SelectItem>
+                <SelectItem value="other">Other</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+          <div className="grid w-full max-w-sm items-center gap-1.5">
+            <Label htmlFor="age">Age</Label>
+            <Slider
+              defaultValue={age}
+              min={18}
+              max={99}
+              step={1}
+              onValueChange={(value) => setAge(value)}
+            />
+          </div>
+        </div>
+        <DrawerFooter className="flex-row">
+          <DrawerClose asChild>
+            <Button variant="outline" className="w-full">
+              Cancel
+            </Button>
           </DrawerClose>
+          <Button className="w-full">Submit</Button>
         </DrawerFooter>
       </DrawerContent>
     </Drawer>
