@@ -876,6 +876,7 @@ export const FiltersDrawer = () => {
             </Button>
           </DrawerClose>
           <Button className="w-full" disabled={loading} onClick={handleFilters}>
+            {loading ? <Loader2 className="animate-spin" /> : null}
             {loading ? "Saving..." : "Save Changes"}
           </Button>
         </DrawerFooter>
