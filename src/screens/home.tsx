@@ -333,11 +333,9 @@ export const AlertDialogWrapper = () => {
 
   return (
     <AlertDialog open={filterDialogOpen} onOpenChange={setFilterDialogOpen}>
-      <AlertDialogTrigger asChild onClick={handleFilterDialog}>
-        <Button variant="secondary" className="w-full">
+        <Button variant="secondary" className="w-full" onClick={handleFilterDialog}>
           <Filter /> Preferences
         </Button>
-      </AlertDialogTrigger>
       <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogTitle>🔓 Unlock Filters & Chat Better!</AlertDialogTitle>
@@ -376,7 +374,6 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-  AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { Particles } from "@/components/ui/particles";
 import {
