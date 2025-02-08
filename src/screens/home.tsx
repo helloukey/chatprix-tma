@@ -12,8 +12,10 @@ import {
   Drawer,
   DrawerClose,
   DrawerContent,
+  DrawerDescription,
   DrawerFooter,
   DrawerHeader,
+  DrawerTitle,
   DrawerTrigger,
 } from "@/components/ui/drawer";
 import { Input } from "@/components/ui/input";
@@ -282,9 +284,10 @@ export const SettingsDrawer = () => {
 
 export const AlertDialogWrapper = () => {
   const showAd = useMountAd({ id: ads.filter });
-  const { setIsPro } = useUserState((state) => state);
+  const { isPro, setIsPro, setFilterOpen } = useUserState((state) => state);
   const { toast } = useToast();
   const [loading, setLoading] = useState(false);
+  const [filterDialogOpen, setFilterDialogOpen] = useState(false);
 
   // Handle PRO Upgrade
   const handlePRO = async () => {
@@ -319,9 +322,18 @@ export const AlertDialogWrapper = () => {
     }
   };
 
+  // Handle Filter Dialog
+  const handleFilterDialog = () => {
+    if (isPro) {
+      setFilterOpen(true);
+    } else {
+      setFilterDialogOpen(true);
+    }
+  };
+
   return (
-    <AlertDialog>
-      <AlertDialogTrigger asChild>
+    <AlertDialog open={filterDialogOpen} onOpenChange={setFilterDialogOpen}>
+      <AlertDialogTrigger asChild onClick={handleFilterDialog}>
         <Button variant="secondary" className="w-full">
           <Filter /> Preferences
         </Button>
@@ -721,5 +733,27 @@ export const AvatarDialog = ({ children }: { children: ReactNode }) => {
         </DialogFooter>
       </DialogContent>
     </Dialog>
+  );
+};
+
+export const FiltersDrawer = () => {
+  const { filterOpen, setFilterOpen } = useUserState((state) => state);
+
+  return (
+    <Drawer open={filterOpen} onOpenChange={setFilterOpen}>
+      {/* <DrawerTrigger>Open</DrawerTrigger> */}
+      <DrawerContent>
+        <DrawerHeader>
+          <DrawerTitle>Are you absolutely sure?</DrawerTitle>
+          <DrawerDescription>This action cannot be undone.</DrawerDescription>
+        </DrawerHeader>
+        <DrawerFooter>
+          <Button>Submit</Button>
+          <DrawerClose>
+            <Button variant="outline">Cancel</Button>
+          </DrawerClose>
+        </DrawerFooter>
+      </DrawerContent>
+    </Drawer>
   );
 };

@@ -1,6 +1,12 @@
 "use client";
 
-import { Footer, Hero, ParticlesWrapper, SettingsDrawer } from "@/screens/home";
+import {
+  FiltersDrawer,
+  Footer,
+  Hero,
+  ParticlesWrapper,
+  SettingsDrawer,
+} from "@/screens/home";
 
 export default function Home() {
   return (
@@ -9,6 +15,7 @@ export default function Home() {
         {/* Navbar */}
         <div className="w-full flex justify-end items-center">
           <SettingsDrawer />
+          <FiltersDrawer />
         </div>
         {/* Hero */}
         <Hero />

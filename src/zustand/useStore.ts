@@ -10,6 +10,8 @@ interface UserState {
   setIsPro: (isPro: boolean) => void;
   loading: boolean;
   setLoading: (loading: boolean) => void;
+  filterOpen: boolean;
+  setFilterOpen: (filterOpen: boolean) => void;
 }
 
 const useUserState = create<UserState>()((set) => ({
@@ -21,6 +23,8 @@ const useUserState = create<UserState>()((set) => ({
   setIsPro: (isPro) => set({ isPro }),
   loading: false,
   setLoading: (loading) => set({ loading }),
+  filterOpen: false,
+  setFilterOpen: (filterOpen) => set({ filterOpen }),
 }));
 
 export { useUserState };
