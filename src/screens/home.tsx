@@ -305,6 +305,8 @@ export const AlertDialogWrapper = () => {
       const status = await invoice.open(result, "url");
       if (status === "paid") {
         setIsPro(true);
+        setFilterDialogOpen(false);
+        setFilterOpen(true);
         toast({
           title: "Success!",
           description: "You have successfully upgraded to PRO.",
@@ -333,9 +335,13 @@ export const AlertDialogWrapper = () => {
 
   return (
     <AlertDialog open={filterDialogOpen} onOpenChange={setFilterDialogOpen}>
-        <Button variant="secondary" className="w-full" onClick={handleFilterDialog}>
-          <Filter /> Preferences
-        </Button>
+      <Button
+        variant="secondary"
+        className="w-full"
+        onClick={handleFilterDialog}
+      >
+        <Filter /> Preferences
+      </Button>
       <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogTitle>🔓 Unlock Filters & Chat Better!</AlertDialogTitle>
