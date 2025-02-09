@@ -1,4 +1,10 @@
-import { doc, DocumentData, getDoc, setDoc } from "firebase/firestore";
+import {
+  doc,
+  DocumentData,
+  getDoc,
+  setDoc,
+  updateDoc,
+} from "firebase/firestore";
 import { db } from "./config";
 import { generateUsername } from "unique-username-generator";
 import { generateAvatar, isSubscriptionValid } from "@/lib/utils";
@@ -36,4 +42,19 @@ const checkAndUpdateUser = async (
   }
 };
 
-export { checkAndUpdateUser };
+const resetFilter = async (isPro: boolean, userId: string) => {
+  // Only allow non-pro users to reset filter
+  if (isPro) return false;
+
+  try {
+    await updateDoc(doc(db, "users", userId), {
+      filters: null,
+    });
+    return true;
+  } catch (error) {
+    console.error(error);
+    return false;
+  }
+};
+
+export { checkAndUpdateUser, resetFilter };
