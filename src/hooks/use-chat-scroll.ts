@@ -13,10 +13,14 @@ const useChatScroll = ({ messages }: { messages: Message[] }) => {
   const ref = useRef<HTMLDivElement>(null);
 
   const Scroll = () => {
-    const { offsetHeight, scrollHeight, scrollTop } =
-      ref.current as HTMLDivElement;
-    if (scrollHeight <= scrollTop + offsetHeight + 100) {
-      ref.current?.scrollTo(0, scrollHeight);
+    if (ref.current?.children.length) {
+      const lastElement = ref.current?.lastChild as HTMLElement;
+
+      lastElement?.scrollIntoView({
+        behavior: "smooth",
+        block: "end",
+        inline: "nearest",
+      });
     }
   };
 
