@@ -3,6 +3,7 @@
 import { Button } from "@/components/ui/button";
 import { db } from "@/firebase/config";
 import { findMatchFromQueue, removeFromQueue } from "@/firebase/queue";
+import { resetFilter } from "@/firebase/user";
 import { useToast } from "@/hooks/use-toast";
 import { ParticlesWrapper } from "@/screens/home";
 import { LottieSearch } from "@/screens/search";
@@ -20,7 +21,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
 export default function Search() {
-  const { userId, user, loading } = useUserState((state) => state);
+  const { userId, user, loading, isPro } = useUserState((state) => state);
   const { toast } = useToast();
   const router = useRouter();
   const [trigger, setTrigger] = useState(false);
@@ -43,7 +44,10 @@ export default function Search() {
   useEffect(() => {
     const findMatch = async (id: string, user: DocumentData) => {
       try {
-        const result = await findMatchFromQueue(id, user);
+        const [result] = await Promise.all([
+          findMatchFromQueue(id, user),
+          resetFilter(isPro, id),
+        ]);
         if (result) {
           toast({
             title: "Match Found!",
@@ -59,7 +63,7 @@ export default function Search() {
     if (userId && user) {
       findMatch(userId, user);
     }
-  }, [userId, user, router, toast, trigger]);
+  }, [userId, user, router, toast, trigger, isPro]);
 
   // Check for changes in active chat is user is already in chat
   useEffect(() => {
@@ -76,6 +80,7 @@ export default function Search() {
       }
       const document = doc.docs[0];
       if (document.exists()) {
+        resetFilter(isPro, userId);
         toast({
           title: "Match Found!",
           description: "You have been matched with a partner",
@@ -85,7 +90,7 @@ export default function Search() {
     });
 
     return () => unsub();
-  }, [router, toast, userId]);
+  }, [isPro, router, toast, userId]);
 
   // Trigger when there is a change in queues collection
   useEffect(() => {
