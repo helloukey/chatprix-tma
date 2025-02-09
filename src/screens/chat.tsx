@@ -15,6 +15,7 @@ import { Button, buttonVariants } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
 import { db } from "@/firebase/config";
+import { useChatScroll } from "@/hooks/use-chat-scroll";
 import { cn } from "@/lib/utils";
 import { useUserState } from "@/zustand/useStore";
 import {
@@ -165,9 +166,13 @@ interface Message {
 
 export const Messages = ({ messages }: { messages: Message[] }) => {
   const { userId } = useUserState((state) => state);
+  const ref = useChatScroll({ messages });
 
   return (
-    <div className="w-full h-full max-h-[75%] space-y-4 my-4 px-4 text-sm overflow-y-auto">
+    <div
+      className="w-full h-full max-h-[75%] space-y-4 my-4 px-4 text-sm overflow-y-auto"
+      ref={ref}
+    >
       {messages.map((message) => (
         <ChatBubble
           key={message.timestamp.seconds}
