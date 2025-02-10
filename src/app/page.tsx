@@ -20,7 +20,6 @@ export default function Home() {
         {/* Hero */}
         <Hero />
         {/* Footer */}
-        
         <Footer />
       </div>
     </ParticlesWrapper>
