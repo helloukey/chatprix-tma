@@ -749,7 +749,7 @@ export const AvatarDialog = ({ children }: { children: ReactNode }) => {
 
 export const FiltersDrawer = () => {
   const mappedCountries = [{ label: "All", value: "all" }, ...countries];
-  const { filterOpen, setFilterOpen, userId } = useUserState((state) => state);
+  const { filterOpen, setFilterOpen, userId, setUser } = useUserState((state) => state);
   const { toast } = useToast();
   const [gender, setGender] = useState("all");
   const [age, setAge] = useState([18, 99]);
@@ -771,6 +771,10 @@ export const FiltersDrawer = () => {
           country: country === "all" ? "" : country,
         },
       });
+      const user = await getDoc(userRef);
+      if (user.exists()) {
+        setUser(user.data());
+      }
       setFilterOpen(false);
     } catch (error) {
       console.error("Error updating filters", error);
@@ -829,7 +833,7 @@ export const FiltersDrawer = () => {
                 >
                   {country
                     ? mappedCountries.find((data) => data.value === country)
-                        ?.label
+                      ?.label
                     : "Select country..."}
                   <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 text-muted-foreground" />
                 </Button>
