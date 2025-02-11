@@ -2,6 +2,7 @@ import {
   addDoc,
   and,
   collection,
+  CollectionReference,
   deleteDoc,
   doc,
   DocumentData,
@@ -14,6 +15,67 @@ import {
   writeBatch,
 } from "firebase/firestore";
 import { db } from "./config";
+
+const generateQuery = (
+  queryRef: CollectionReference<DocumentData, DocumentData>,
+  userId: string,
+  user: DocumentData,
+  isFilter: boolean
+) => {
+  if (!isFilter) {
+    const q1 = where(documentId(), "!=", userId);
+    const q2 = where("filters", "==", null);
+    const q3 = where("filters.gender", "==", "");
+    const q4 = where("filters.gender", "==", user.gender);
+    const q5 = where("filters.country", "==", "");
+    const q6 = where("filters.country", "==", user.country);
+    const q7 = where(
+      "filters.minAge",
+      "<=",
+      new Date().getFullYear() - user.dob.toDate().getFullYear()
+    );
+    const q8 = where(
+      "filters.maxAge",
+      ">=",
+      new Date().getFullYear() - user.dob.toDate().getFullYear()
+    );
+
+    return query(
+      queryRef,
+      and(q1, or(q2, and(or(q3, q4), or(q5, q6), q7, q8)))
+    );
+  } else {
+    const q1 = where(documentId(), "!=", userId);
+    const q2 =
+      user.filters.gender == ""
+        ? where("gender", "in", ["male", "female", "other", ""])
+        : where("gender", "==", user.filters.gender);
+    const q3 =
+      user.filters.country == ""
+        ? where("country", "!=", "INVALID_VALUE")
+        : where("country", "==", user.filters.country);
+    const q4 = where(
+      "dob",
+      "<=",
+      new Date(
+        new Date().getFullYear() - user.filters.minAge,
+        new Date().getMonth(),
+        new Date().getDate()
+      )
+    );
+    const q5 = where(
+      "dob",
+      ">=",
+      new Date(
+        new Date().getFullYear() - user.filters.maxAge,
+        new Date().getMonth(),
+        new Date().getDate()
+      )
+    );
+
+    return query(queryRef, and(q1, q2, q3, q4, q5));
+  }
+};
 
 const updateQueue = async (user: DocumentData, userId: string) => {
   try {
@@ -42,7 +104,8 @@ const findMatchFromQueue = async (userId: string, user: DocumentData) => {
 
     // Find a match from the queue
     const queuesRef = collection(db, "queues");
-    const q = query(queuesRef, where(documentId(), "!=", userId));
+    const isFilter = user?.filters ? true : false;
+    const q = generateQuery(queuesRef, userId, user, isFilter);
     const querySnapshot = await getDocs(q);
     if (querySnapshot.empty) {
       return null;
