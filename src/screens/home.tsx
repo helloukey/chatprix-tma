@@ -767,7 +767,8 @@ export const FiltersDrawer = () => {
       await updateDoc(userRef, {
         filters: {
           gender: gender === "all" ? "" : gender,
-          age,
+          minAge: age[0],
+          maxAge: age[1],
           country: country === "all" ? "" : country,
         },
       });
