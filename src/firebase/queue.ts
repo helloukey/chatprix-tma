@@ -11,6 +11,7 @@ import {
   or,
   query,
   setDoc,
+  Timestamp,
   where,
   writeBatch,
 } from "firebase/firestore";
@@ -32,12 +33,24 @@ const generateQuery = (
     const q7 = where(
       "filters.minAge",
       "<=",
-      new Date().getFullYear() - user.dob.toDate().getFullYear()
+      Timestamp.fromDate(
+        new Date(
+          new Date().getFullYear() - user.dob.toDate().getFullYear(),
+          0,
+          1
+        )
+      )
     );
     const q8 = where(
       "filters.maxAge",
       ">=",
-      new Date().getFullYear() - user.dob.toDate().getFullYear()
+      Timestamp.fromDate(
+        new Date(
+          new Date().getFullYear() - user.dob.toDate().getFullYear(),
+          0,
+          1
+        )
+      )
     );
 
     return query(
@@ -56,20 +69,16 @@ const generateQuery = (
         : where("country", "==", user.filters.country);
     const q4 = where(
       "dob",
-      "<=",
-      new Date(
-        new Date().getFullYear() - user.filters.minAge,
-        new Date().getMonth(),
-        new Date().getDate()
+      ">=",
+      Timestamp.fromDate(
+        new Date(new Date().getFullYear() - user.filters.maxAge, 0, 1)
       )
     );
     const q5 = where(
       "dob",
-      ">=",
-      new Date(
-        new Date().getFullYear() - user.filters.maxAge,
-        new Date().getMonth(),
-        new Date().getDate()
+      "<=",
+      Timestamp.fromDate(
+        new Date(new Date().getFullYear() - user.filters.minAge, 0, 1)
       )
     );
 
