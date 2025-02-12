@@ -24,9 +24,9 @@ const generateQuery = (
   isFilter: boolean
 ) => {
   if (!isFilter) {
-    const currentAge = user.dob
-      ? new Date().getFullYear() - user.dob.toDate().getFullYear()
-      : null;
+    // const currentAge = user.dob
+    //   ? new Date().getFullYear() - user.dob.toDate().getFullYear()
+    //   : null;
 
     // Query 1: Users with filters field as null
     const query1 = query(
@@ -36,24 +36,24 @@ const generateQuery = (
     );
 
     // Query 2: Users with matching filters
-    const conditions = [
-      where(documentId(), "!=", userId),
-      where("filters.gender", "in", ["", user.gender]),
-      where("filters.country", "in", ["", user.country]),
-    ];
+    // const conditions = [
+    //   where(documentId(), "!=", userId),
+    //   where("filters.gender", "in", ["", user.gender]),
+    //   where("filters.country", "in", ["", user.country]),
+    // ];
 
-    // Age condition
-    if (currentAge !== null) {
-      conditions.push(where("filters.minAge", "<=", currentAge));
-      conditions.push(where("filters.maxAge", ">=", currentAge));
-    } else {
-      conditions.push(where("filters.minAge", ">=", 18));
-      conditions.push(where("filters.maxAge", "<=", 99));
-    }
+    // // Age condition
+    // if (currentAge !== null) {
+    //   conditions.push(where("filters.minAge", "<=", currentAge));
+    //   conditions.push(where("filters.maxAge", ">=", currentAge));
+    // } else {
+    //   conditions.push(where("filters.minAge", ">=", 18));
+    //   conditions.push(where("filters.maxAge", "<=", 99));
+    // }
 
-    const query2 = query(queryRef, ...conditions);
+    // const query2 = query(queryRef, ...conditions);
 
-    return { query1, query2 };
+    return { query1 };
   } else {
     const q1 = where(documentId(), "!=", userId);
     const q2 =
@@ -111,16 +111,12 @@ const findMatchFromQueue = async (userId: string, user: DocumentData) => {
     // Find a match from the queue
     const queuesRef = collection(db, "queues");
     const isFilter = user.filters ? true : false;
-    const { query1, query2 } = generateQuery(queuesRef, userId, user, isFilter);
+    const { query1 } = generateQuery(queuesRef, userId, user, isFilter);
     let querySnapshot;
     if (isFilter) {
       querySnapshot = await getDocs(query1);
     } else {
       querySnapshot = await getDocs(query1);
-      console.log(querySnapshot);
-      if (querySnapshot.empty && query2) {
-        querySnapshot = await getDocs(query2);
-      }
     }
     if (querySnapshot.empty) {
       return null;
