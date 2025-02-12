@@ -101,9 +101,7 @@ const findMatchFromQueue = async (userId: string, user: DocumentData) => {
     const queuesRef = collection(db, "queues");
     const isFilter = user.filters ? true : false;
     const q = generateQuery(queuesRef, userId, user, isFilter);
-    console.log("q", q);
     const querySnapshot = await getDocs(q);
-    console.log("querySnapshot", querySnapshot);
     if (querySnapshot.empty) {
       return null;
     }
