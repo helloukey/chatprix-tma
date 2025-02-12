@@ -28,16 +28,12 @@ const generateQuery = (
       ? new Date().getFullYear() - user.dob.toDate().getFullYear()
       : null;
 
-    console.log("Current Age: ", currentAge);
-
     // Query 1: Users with filters field as null
     const query1 = query(
       queryRef,
       where(documentId(), "!=", userId),
       where("filters", "==", null)
     );
-
-    console.log("Query 1: ", query1);
 
     // Query 2: Users with matching filters
     const conditions = [
@@ -56,8 +52,6 @@ const generateQuery = (
     }
 
     const query2 = query(queryRef, ...conditions);
-
-    console.log("Query 2: ", query2);
 
     return { query1, query2 };
   } else {
@@ -123,6 +117,7 @@ const findMatchFromQueue = async (userId: string, user: DocumentData) => {
       querySnapshot = await getDocs(query1);
     } else {
       querySnapshot = await getDocs(query1);
+      console.log(querySnapshot);
       if (querySnapshot.empty && query2) {
         querySnapshot = await getDocs(query2);
       }
