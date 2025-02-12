@@ -44,11 +44,9 @@ export default function Search() {
   useEffect(() => {
     const findMatch = async (id: string, user: DocumentData) => {
       try {
-        const [result] = await Promise.all([
-          findMatchFromQueue(id, user),
-          resetFilter(isPro, id),
-        ]);
+        const result = await findMatchFromQueue(id, user);
         if (result) {
+          await resetFilter(isPro, id);
           toast({
             title: "Match Found!",
             description: "You have been matched with a partner",
