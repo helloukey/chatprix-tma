@@ -55,10 +55,12 @@ const getSnapshot = async (
 
     const snapshot1 = await getDocs(query1);
     if (!snapshot1.empty) {
+      console.log("Snapshot 1: ", snapshot1);
       return snapshot1;
     }
 
     const snapshot2 = await getDocs(query2);
+    console.log("Snapshot 2: ", snapshot2);
     return snapshot2;
   } else {
     const q1 = where(documentId(), "!=", userId);
