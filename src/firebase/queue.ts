@@ -24,7 +24,7 @@ const generateQuery = (
   isFilter: boolean
 ) => {
   if (!isFilter) {
-    const currentAge = user?.dob
+    const currentAge = user.dob
       ? new Date().getFullYear() - user.dob.toDate().getFullYear()
       : 0;
     const q1 = where(documentId(), "!=", userId);
@@ -33,10 +33,10 @@ const generateQuery = (
     const q4 = where("filters.gender", "==", user.gender);
     const q5 = where("filters.country", "==", "");
     const q6 = where("filters.country", "==", user.country);
-    const q7 = user?.dob
+    const q7 = user.dob
       ? where("filters.minAge", "<=", currentAge)
       : where("filters.minAge", ">=", 18);
-    const q8 = user?.dob
+    const q8 = user.dob
       ? where("filters.maxAge", ">=", currentAge)
       : where("filters.maxAge", "<=", 99);
 
