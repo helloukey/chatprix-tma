@@ -17,7 +17,7 @@ import {
 } from "firebase/firestore";
 import { db } from "./config";
 
-const generateQuery = (
+const getSnapshot = async (
   queryRef: CollectionReference<DocumentData, DocumentData>,
   userId: string,
   user: DocumentData,
@@ -53,7 +53,13 @@ const generateQuery = (
 
     const query2 = query(queryRef, ...conditions);
 
-    return { query1, query2 };
+    const snapshot1 = await getDocs(query1);
+    if (!snapshot1.empty) {
+      return snapshot1;
+    }
+
+    const snapshot2 = await getDocs(query2);
+    return snapshot2;
   } else {
     const q1 = where(documentId(), "!=", userId);
     const q2 =
@@ -79,7 +85,8 @@ const generateQuery = (
     const q5 = where("dob", "<=", Timestamp.fromDate(maxDOB));
 
     const query1 = query(queryRef, and(q1, q2, q3, q4, q5));
-    return { query1 };
+    const snapshot = await getDocs(query1);
+    return snapshot;
   }
 };
 
@@ -110,9 +117,8 @@ const findMatchFromQueue = async (userId: string, user: DocumentData) => {
 
     // Find a match from the queue
     const queuesRef = collection(db, "queues");
-    // const isFilter = user.filters ? true : false;
-    const q = query(queuesRef, where(documentId(), "!=", userId));
-    const querySnapshot = await getDocs(q);
+    const isFilter = user.filters ? true : false;
+    const querySnapshot = await getSnapshot(queuesRef, userId, user, isFilter);
     if (querySnapshot.empty) {
       return null;
     }
@@ -176,4 +182,4 @@ const removeFromQueue = async (userId: string) => {
   }
 };
 
-export { updateQueue, findMatchFromQueue, removeFromQueue, generateQuery };
+export { updateQueue, findMatchFromQueue, removeFromQueue };
