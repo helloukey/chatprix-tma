@@ -24,34 +24,21 @@ const generateQuery = (
   isFilter: boolean
 ) => {
   if (!isFilter) {
+    const currentAge = user?.dob
+      ? new Date().getFullYear() - user.dob.toDate().getFullYear()
+      : 0;
     const q1 = where(documentId(), "!=", userId);
     const q2 = where("filters", "==", null);
     const q3 = where("filters.gender", "==", "");
     const q4 = where("filters.gender", "==", user.gender);
     const q5 = where("filters.country", "==", "");
     const q6 = where("filters.country", "==", user.country);
-    const q7 = where(
-      "filters.minAge",
-      "<=",
-      Timestamp.fromDate(
-        new Date(
-          new Date().getFullYear() - user.dob.toDate().getFullYear(),
-          0,
-          1
-        )
-      )
-    );
-    const q8 = where(
-      "filters.maxAge",
-      ">=",
-      Timestamp.fromDate(
-        new Date(
-          new Date().getFullYear() - user.dob.toDate().getFullYear(),
-          0,
-          1
-        )
-      )
-    );
+    const q7 = user?.dob
+      ? where("filters.minAge", "<=", currentAge)
+      : where("filters.minAge", ">=", 18);
+    const q8 = user?.dob
+      ? where("filters.maxAge", ">=", currentAge)
+      : where("filters.maxAge", "<=", 99);
 
     return query(
       queryRef,
@@ -67,20 +54,19 @@ const generateQuery = (
       user.filters.country == ""
         ? where("country", "!=", "INVALID_VALUE")
         : where("country", "==", user.filters.country);
-    const q4 = where(
-      "dob",
-      ">=",
-      Timestamp.fromDate(
-        new Date(new Date().getFullYear() - user.filters.maxAge, 0, 1)
-      )
+    const now = new Date();
+    const minDOB = new Date(
+      now.getFullYear() - user.filters.minAge,
+      now.getMonth(),
+      now.getDate()
     );
-    const q5 = where(
-      "dob",
-      "<=",
-      Timestamp.fromDate(
-        new Date(new Date().getFullYear() - user.filters.minAge, 0, 1)
-      )
+    const maxDOB = new Date(
+      now.getFullYear() - user.filters.maxAge,
+      now.getMonth(),
+      now.getDate()
     );
+    const q4 = where("dob", ">=", Timestamp.fromDate(minDOB));
+    const q5 = where("dob", "<=", Timestamp.fromDate(maxDOB));
 
     return query(queryRef, and(q1, q2, q3, q4, q5));
   }
