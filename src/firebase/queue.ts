@@ -121,7 +121,6 @@ const findMatchFromQueue = async (userId: string, user: DocumentData) => {
         querySnapshot = await getDocs(query2);
       }
     }
-    console.log(querySnapshot);
     if (querySnapshot.empty) {
       return null;
     }
