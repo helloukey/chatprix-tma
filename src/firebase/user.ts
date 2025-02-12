@@ -28,11 +28,28 @@ const checkAndUpdateUser = async (
         data.pro.subscription_expiration_date
       );
       setIsPro(isValid);
+      if (data.filters && !isValid) {
+        await updateDoc(docRef, {
+          filters: null,
+        });
+      }
+    } else {
+      setIsPro(false);
+      if (data.filters) {
+        await updateDoc(docRef, {
+          filters: null,
+        });
+      }
     }
   } else {
     await setDoc(docRef, {
       username: generateUsername("", 0, 8),
       avatar: generateAvatar(),
+      filters: null,
+      pro: null,
+      gender: "",
+      dob: "",
+      country: "",
     });
     const data = await getDoc(docRef);
     if (data.exists()) {
