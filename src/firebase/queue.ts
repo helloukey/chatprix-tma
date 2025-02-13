@@ -53,7 +53,7 @@ const getSnapshot = async (
 const updateQueue = async (user: DocumentData, userId: string) => {
   try {
     await setDoc(doc(db, "queues", userId), {
-      user: user,
+      ...user,
     });
     return true;
   } catch (error) {
