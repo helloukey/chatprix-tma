@@ -31,7 +31,8 @@ const getSnapshot = async (
     // Query 1: Users with filters field as null
     const query1 = query(
       queryRef,
-      where(documentId(), "!=", userId)
+      where(documentId(), "!=", userId),
+      where("filters", "==", "")
     );
 
     // Query 2: Users with matching filters
