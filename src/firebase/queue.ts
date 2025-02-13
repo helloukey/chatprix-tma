@@ -196,7 +196,7 @@ const findMatchFromQueueNoFilter = async (
     const q = query(
       queuesRef,
       where(documentId(), "!=", userId),
-      where("filters", "!=", null)
+      where("filters", "==", null)
     );
     const querySnapshot = await getDocs(q);
     if (querySnapshot.empty) {
