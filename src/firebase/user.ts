@@ -30,14 +30,14 @@ const checkAndUpdateUser = async (
       setIsPro(isValid);
       if (data.filters && !isValid) {
         await updateDoc(docRef, {
-          filters: "",
+          filters: null,
         });
       }
     } else {
       setIsPro(false);
       if (data.filters) {
         await updateDoc(docRef, {
-          filters: "",
+          filters: null,
         });
       }
     }
@@ -45,7 +45,7 @@ const checkAndUpdateUser = async (
     await setDoc(docRef, {
       username: generateUsername("", 0, 8),
       avatar: generateAvatar(),
-      filters: "",
+      filters: null,
       pro: null,
       gender: "",
       dob: "",
@@ -65,7 +65,7 @@ const resetFilter = async (isPro: boolean, userId: string) => {
 
   try {
     await updateDoc(doc(db, "users", userId), {
-      filters: "",
+      filters: null,
     });
     return true;
   } catch (error) {
