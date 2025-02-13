@@ -212,7 +212,7 @@ export const SettingsDrawer = () => {
           {/* Country */}
           <div className="grid w-full max-w-sm items-center gap-1.5">
             <Label htmlFor="email">Country</Label>
-            <Popover open={open} onOpenChange={setOpen}>
+            <Popover modal={true} open={open} onOpenChange={setOpen}>
               <PopoverTrigger asChild>
                 <Button
                   variant="outline"
@@ -824,7 +824,7 @@ export const FiltersDrawer = () => {
           </div>
           <div className="grid w-full max-w-sm items-center gap-1.5">
             <Label htmlFor="email">Country</Label>
-            <Popover open={open} onOpenChange={setOpen}>
+            <Popover modal={true} open={open} onOpenChange={setOpen}>
               <PopoverTrigger asChild>
                 <Button
                   variant="outline"
