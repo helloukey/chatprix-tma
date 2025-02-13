@@ -54,6 +54,7 @@ const getSnapshot = async (
     const query2 = query(queryRef, ...conditions);
 
     const snapshot1 = await getDocs(query1);
+    console.log(snapshot1);
     if (!snapshot1.empty) {
       return snapshot1;
     }
