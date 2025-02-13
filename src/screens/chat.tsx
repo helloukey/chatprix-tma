@@ -27,7 +27,7 @@ import {
   updateDoc,
 } from "firebase/firestore";
 import { SendHorizonal } from "lucide-react";
-import { FC, useEffect, useState } from "react";
+import { FC, useEffect, useRef, useState } from "react";
 import Peep from "react-peeps";
 
 type Props = {
@@ -38,6 +38,7 @@ type Props = {
 export const Header = ({ chatId, chat }: Props) => {
   const { userId } = useUserState((state) => state);
   const [matchedUser, setMatchedUser] = useState<DocumentData | null>(null);
+  const [matchedUserTyping, setMatchedUserTyping] = useState(false);
   const [loading, setLoading] = useState(false);
 
   // Handle End Chat
@@ -58,10 +59,18 @@ export const Header = ({ chatId, chat }: Props) => {
   useEffect(() => {
     if (!chat || !userId) return;
 
+    // Set matched user based on chat data
     if (chat.user1 == userId) {
       setMatchedUser(chat.user2profile);
     } else {
       setMatchedUser(chat.user1profile);
+    }
+
+    // Listen for typing status
+    if (chat.user1 == userId) {
+      setMatchedUserTyping(chat.user2typing);
+    } else {
+      setMatchedUserTyping(chat.user1typing);
     }
   }, [chat, userId]);
 
@@ -94,7 +103,9 @@ export const Header = ({ chatId, chat }: Props) => {
         </div>
         <p className="text-sm">
           {matchedUser ? matchedUser.username : "Fetching..."}{" "}
-          <span className="text-xs text-muted-foreground"></span>
+          <span className="text-xs text-muted-foreground">
+            {matchedUserTyping ? "typing..." : ""}
+          </span>
         </p>
       </div>
       <AlertDialog>
@@ -184,18 +195,60 @@ export const Messages = ({ messages }: { messages: Message[] }) => {
   );
 };
 
-export const Action = ({ chatId }: { chatId: string | null }) => {
+export const Action = ({
+  chatId,
+  chat,
+}: {
+  chatId: string | null;
+  chat: DocumentData | null;
+}) => {
   const { userId } = useUserState((state) => state);
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
+  const [isTyping, setIsTyping] = useState(false);
+  const typingTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+  // Handle Typing Status Update
+  const updateTypingStatus = async (status: boolean) => {
+    if (!chatId || !userId || !chat) return;
+    if (userId == chat.user1) {
+      await updateDoc(doc(db, "active", chatId), {
+        user1typing: status,
+      });
+    } else {
+      await updateDoc(doc(db, "active", chatId), {
+        user2typing: status,
+      });
+    }
+  };
+
+  // Handle Message Change
+  const handleMessageChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setMessage(e.target.value);
+    if (!isTyping) {
+      setIsTyping(true);
+      updateTypingStatus(true);
+    }
+
+    if (typingTimeoutRef.current) clearTimeout(typingTimeoutRef.current);
+    typingTimeoutRef.current = setTimeout(() => {
+      setIsTyping(false);
+      updateTypingStatus(false);
+    }, 1500);
+  };
+
+  // Cleanup timeout on unmount
+  useEffect(() => {
+    return () => {
+      if (typingTimeoutRef.current) clearTimeout(typingTimeoutRef.current);
+    };
+  }, []);
 
   // Handle Send Message
   const handleSendMessage = async () => {
     if (!chatId || !userId || !message) return;
-
     try {
       setLoading(true);
-      // Send message to chat
       await updateDoc(doc(db, "active", chatId), {
         messages: arrayUnion({
           timestamp: Timestamp.now().toString(),
@@ -208,6 +261,7 @@ export const Action = ({ chatId }: { chatId: string | null }) => {
     } finally {
       setLoading(false);
       setMessage("");
+      updateTypingStatus(false); // Ensure typing status resets after sending message
     }
   };
 
@@ -216,13 +270,9 @@ export const Action = ({ chatId }: { chatId: string | null }) => {
       <Textarea
         placeholder="Type a message..."
         className="w-11/12 text-sm flex-grow resize-none overflow-hidden py-2 px-3"
-        style={{
-          height: "40px",
-          minHeight: "40px", // Ensure minimum height is always 40px
-          lineHeight: "24px", // Adjust line height for better text alignment
-        }}
+        style={{ height: "40px", minHeight: "40px", lineHeight: "24px" }}
         value={message}
-        onChange={(e) => setMessage(e.target.value)}
+        onChange={handleMessageChange}
       />
       <Button
         variant="outline"
