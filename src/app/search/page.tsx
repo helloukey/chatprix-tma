@@ -2,7 +2,11 @@
 
 import { Button } from "@/components/ui/button";
 import { db } from "@/firebase/config";
-import { findMatchFromQueue, removeFromQueue } from "@/firebase/queue";
+import {
+  findMatchFromQueue,
+  findMatchFromQueueNoFilter,
+  removeFromQueue,
+} from "@/firebase/queue";
 import { resetFilter } from "@/firebase/user";
 import { useToast } from "@/hooks/use-toast";
 import { ParticlesWrapper } from "@/screens/home";
@@ -44,7 +48,9 @@ export default function Search() {
   useEffect(() => {
     const findMatch = async (id: string, user: DocumentData) => {
       try {
-        const result = await findMatchFromQueue(id, user);
+        const result = user.filters
+          ? await findMatchFromQueue(id, user)
+          : await findMatchFromQueueNoFilter(id, user);
         if (result) {
           await resetFilter(isPro, id);
           toast({
