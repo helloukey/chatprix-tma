@@ -121,7 +121,7 @@ const findMatchFromQueue = async (userId: string, user: DocumentData) => {
       user1: userId,
       user2: matchId,
       user1profile: user,
-      user2profile: matchData.user,
+      user2profile: matchData,
       messages: [],
     });
 
@@ -237,7 +237,7 @@ const findMatchFromQueueNoFilter = async (
       user1: userId,
       user2: matchId,
       user1profile: user,
-      user2profile: matchData.user,
+      user2profile: matchData,
       messages: [],
     });
 
