@@ -18,6 +18,9 @@ const geistMono = localFont({
 export const metadata: Metadata = {
   title: "Chatprix",
   description: "Anonymous Chat App",
+  appleWebApp: {
+    title: "Chatprix",
+  }
 };
 
 export default function RootLayout({
