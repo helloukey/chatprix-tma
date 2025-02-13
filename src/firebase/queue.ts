@@ -132,48 +132,48 @@ const findMatchFromQueue = async (userId: string, user: DocumentData) => {
   }
 };
 
-// const getSnapshotNoFilter = async (
-//   queryRef: CollectionReference<DocumentData, DocumentData>,
-//   userId: string,
-//   user: DocumentData
-// ) => {
-//   const currentAge = user.dob
-//     ? new Date().getFullYear() - user.dob.toDate().getFullYear()
-//     : null;
+const getSnapshotNoFilter = async (
+  queryRef: CollectionReference<DocumentData, DocumentData>,
+  userId: string,
+  user: DocumentData
+) => {
+  const currentAge = user.dob
+    ? new Date().getFullYear() - user.dob.toDate().getFullYear()
+    : null;
 
-//   // Query 1: Users with filters field as null
-//   const query1 = query(
-//     queryRef,
-//     where(documentId(), "!=", userId),
-//     where("filters", "==", null)
-//   );
+  // Query 1: Users with filters field as null
+  const query1 = query(
+    queryRef,
+    where(documentId(), "!=", userId),
+    // where("filters", "==", null)
+  );
 
-//   // Query 2: Users with matching filters
-//   const conditions = [
-//     where(documentId(), "!=", userId),
-//     where("filters.gender", "in", ["", user.gender]),
-//     where("filters.country", "in", ["", user.country]),
-//   ];
+  // Query 2: Users with matching filters
+  const conditions = [
+    where(documentId(), "!=", userId),
+    where("filters.gender", "in", ["", user.gender]),
+    where("filters.country", "in", ["", user.country]),
+  ];
 
-//   // Age condition
-//   if (currentAge !== null) {
-//     conditions.push(where("filters.minAge", "<=", currentAge));
-//     conditions.push(where("filters.maxAge", ">=", currentAge));
-//   } else {
-//     conditions.push(where("filters.minAge", ">=", 18));
-//     conditions.push(where("filters.maxAge", "<=", 99));
-//   }
+  // Age condition
+  if (currentAge !== null) {
+    conditions.push(where("filters.minAge", "<=", currentAge));
+    conditions.push(where("filters.maxAge", ">=", currentAge));
+  } else {
+    conditions.push(where("filters.minAge", ">=", 18));
+    conditions.push(where("filters.maxAge", "<=", 99));
+  }
 
-//   const query2 = query(queryRef, ...conditions);
+  const query2 = query(queryRef, ...conditions);
 
-//   const snapshot1 = await getDocs(query1);
-//   if (!snapshot1.empty) {
-//     return snapshot1;
-//   }
+  const snapshot1 = await getDocs(query1);
+  if (!snapshot1.empty) {
+    return snapshot1;
+  }
 
-//   const snapshot2 = await getDocs(query2);
-//   return snapshot2;
-// };
+  const snapshot2 = await getDocs(query2);
+  return snapshot2;
+};
 
 const findMatchFromQueueNoFilter = async (
   userId: string,
@@ -193,12 +193,7 @@ const findMatchFromQueueNoFilter = async (
 
     // Find a match from the queue
     const queuesRef = collection(db, "queues");
-    const q = query(
-      queuesRef,
-      where(documentId(), "!=", userId),
-      where("filters", "==", null)
-    );
-    const querySnapshot = await getDocs(q);
+    const querySnapshot = await getSnapshotNoFilter(queuesRef, userId, user);
     if (querySnapshot.empty) {
       return null;
     }
