@@ -84,6 +84,7 @@ export default function Search() {
       }
       const document = doc.docs[0];
       if (document.exists()) {
+        removeFromQueue(userId);
         resetFilter(isPro, userId);
         toast({
           title: "Match Found!",
