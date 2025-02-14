@@ -52,6 +52,7 @@ export default function Search() {
           ? await findMatchFromQueue(id, user)
           : await findMatchFromQueueNoFilter(id, user);
         if (result) {
+          await removeFromQueue(id);
           await resetFilter(isPro, id);
           toast({
             title: "Match Found!",
