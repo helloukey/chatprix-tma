@@ -19,7 +19,7 @@ export async function POST() {
   const prices = [
     {
       label: "Chatprix PRO Monthly",
-      amount: 1,
+      amount: 249,
     },
   ];
   const subscription_period = 2592000;
