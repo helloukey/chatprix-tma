@@ -1,0 +1,45 @@
+{
+  "indexes": [
+    {
+      "collectionGroup": "queues",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "filters",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "filters.maxAge",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "filters.minAge",
+          "order": "ASCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "queues",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "filters.country",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "filters.gender",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "filters.maxAge",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "filters.minAge",
+          "order": "ASCENDING"
+        }
+      ]
+    }
+  ],
+  "fieldOverrides": []
+}
