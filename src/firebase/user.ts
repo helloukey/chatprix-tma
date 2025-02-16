@@ -3,6 +3,7 @@ import {
   DocumentData,
   getDoc,
   setDoc,
+  Timestamp,
   updateDoc,
 } from "firebase/firestore";
 import { db } from "./config";
@@ -50,6 +51,7 @@ const checkAndUpdateUser = async (
       gender: "",
       dob: "",
       country: "",
+      lastSeen: Timestamp.now(),
     });
     const data = await getDoc(docRef);
     if (data.exists()) {
