@@ -9,13 +9,15 @@ import {
   retrieveLaunchParams,
 } from "@telegram-apps/sdk-react";
 import { useUserState } from "@/zustand/useStore";
-import { checkAndUpdateUser } from "@/firebase/user";
+import { checkAndUpdateUser, updateUserLastSeen } from "@/firebase/user";
 
 export function ThemeProvider({
   children,
   ...props
 }: ComponentProps<typeof NextThemesProvider>) {
-  const { setLoading, setUser, setUserId, setIsPro } = useUserState((state) => state);
+  const { setLoading, setUser, userId, setUserId, setIsPro } = useUserState(
+    (state) => state
+  );
 
   // Perform telegram check
   const performTelegramCheck = useCallback(async () => {
@@ -40,6 +42,17 @@ export function ThemeProvider({
       performTelegramCheck();
     }
   }, [performTelegramCheck]);
+
+  // Update user lastSeen every 10 seconds
+  useEffect(() => {
+    const interval = setInterval(() => {
+      if (userId) {
+        updateUserLastSeen(userId);
+      }
+    }, 10000);
+
+    return () => clearInterval(interval);
+  }, [userId]);
 
   return <NextThemesProvider {...props}>{children}</NextThemesProvider>;
 }

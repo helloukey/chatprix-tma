@@ -76,4 +76,14 @@ const resetFilter = async (isPro: boolean, userId: string) => {
   }
 };
 
-export { checkAndUpdateUser, resetFilter };
+const updateUserLastSeen = async (userId: string) => {
+  try {
+    await updateDoc(doc(db, "users", userId), {
+      lastSeen: Timestamp.now(),
+    });
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+export { checkAndUpdateUser, resetFilter, updateUserLastSeen };
