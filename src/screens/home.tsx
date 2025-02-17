@@ -422,7 +422,10 @@ export const Hero = () => {
         setSearchLoading(true);
         // Delete active batch
         await deleteActiveBatch(userId);
-        // Update queue
+        // Update queue and lastSeen
+        await updateDoc(doc(db, "users", userId), {
+          lastSeen: Timestamp.now(),
+        });
         const result = await updateQueue(user, userId);
         if (result) {
           // Navigate to search screen
@@ -749,7 +752,9 @@ export const AvatarDialog = ({ children }: { children: ReactNode }) => {
 
 export const FiltersDrawer = () => {
   const mappedCountries = [{ label: "All", value: "all" }, ...countries];
-  const { filterOpen, setFilterOpen, userId, setUser } = useUserState((state) => state);
+  const { filterOpen, setFilterOpen, userId, setUser } = useUserState(
+    (state) => state
+  );
   const { toast } = useToast();
   const [gender, setGender] = useState("all");
   const [age, setAge] = useState([18, 99]);
@@ -834,7 +839,7 @@ export const FiltersDrawer = () => {
                 >
                   {country
                     ? mappedCountries.find((data) => data.value === country)
-                      ?.label
+                        ?.label
                     : "Select country..."}
                   <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 text-muted-foreground" />
                 </Button>
