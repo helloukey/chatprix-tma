@@ -58,6 +58,7 @@ export default function Search() {
           await resetFilter(isPro, id);
           toast({
             title: "Match Found!",
+            description: "Redirecting to chat...",
           });
           router.push("/chat/" + result);
         }
@@ -91,6 +92,7 @@ export default function Search() {
         resetFilter(isPro, userId);
         toast({
           title: "Match Found!",
+          description: "Redirecting to chat...",
         });
         router.push("/chat/" + document.id);
       }
