@@ -47,7 +47,7 @@ const getSnapshot = async (
   const q6 = where(
     "lastSeen",
     ">=",
-    Timestamp.fromDate(new Date(now.getTime() - 60000))
+    Timestamp.fromDate(new Date(Timestamp.now().toMillis() - 60000))
   );
 
   const query1 = query(queryRef, and(q1, q2, q3, q4, q5, q6));
@@ -147,11 +147,10 @@ const getSnapshotNoFilter = async (
   const currentAge = user.dob
     ? new Date().getFullYear() - user.dob.toDate().getFullYear()
     : null;
-  const now = new Date();
   const lastMinute = where(
     "lastSeen",
     ">=",
-    Timestamp.fromDate(new Date(now.getTime() - 60000))
+    Timestamp.fromDate(new Date(Timestamp.now().toMillis() - 60000))
   );
 
   // Query 1: Users with filters field as null
