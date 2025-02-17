@@ -1,19 +1,47 @@
-/**
- * Import function triggers from their respective submodules:
- *
- * const {onCall} = require("firebase-functions/v2/https");
- * const {onDocumentWritten} = require("firebase-functions/v2/firestore");
- *
- * See a full list of supported triggers at https://firebase.google.com/docs/functions
- */
+const {initializeApp} = require("firebase-admin/app");
+const {getFirestore, Timestamp} = require("firebase-admin/firestore");
+const {onSchedule} = require("firebase-functions/scheduler");
 
-const {onRequest} = require("firebase-functions/v2/https");
-const logger = require("firebase-functions/logger");
+initializeApp();
 
-// Create and deploy your first functions
-// https://firebase.google.com/docs/functions/get-started
+exports.clearInactiveUsers = onSchedule("* * * * *", async () => {
+  const db = getFirestore();
+  const min = 60 * 1000;
+  const oneMinuteAgo = Timestamp.fromMillis(Timestamp.now().toMillis() - min);
 
-// exports.helloWorld = onRequest((request, response) => {
-//   logger.info("Hello logs!", {structuredData: true});
-//   response.send("Hello from Firebase!");
-// });
+  try {
+    // 1. Query inactive users in 'queues' collection
+    const inactiveQueuesSnapshot = await db.collection("queues")
+        .where("lastSeen", "<", oneMinuteAgo)
+        .get();
+
+    const user1InactiveSnapshot = await db.collection("chats")
+        .where("user1profile.lastSeen", "<", oneMinuteAgo)
+        .get();
+
+    const user2InactiveSnapshot = await db.collection("chats")
+        .where("user2profile.lastSeen", "<", oneMinuteAgo)
+        .get();
+
+    // Merge unique chat documents (avoid duplicate deletions)
+    const inactiveChatsDocs = new Set([
+      ...user1InactiveSnapshot.docs.map((doc) => doc.ref),
+      ...user2InactiveSnapshot.docs.map((doc) => doc.ref),
+    ]);
+
+    // Delete all inactive users from 'queues' and 'chats'
+    const batch = db.batch();
+
+    inactiveQueuesSnapshot.docs.forEach((doc) => batch.delete(doc.ref));
+    inactiveChatsDocs.forEach((ref) => batch.delete(ref));
+
+    if (!inactiveQueuesSnapshot.empty || inactiveChatsDocs.size > 0) {
+      await batch.commit();
+      console.log(`Deleted ${inactiveQueuesSnapshot.size} inactive users.`);
+    } else {
+      console.log("No inactive users found.");
+    }
+  } catch (error) {
+    console.error("Error clearing inactive users:", error);
+  }
+});
