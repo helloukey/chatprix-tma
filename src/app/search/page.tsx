@@ -9,6 +9,7 @@ import {
 } from "@/firebase/queue";
 import { resetFilter } from "@/firebase/user";
 import { useToast } from "@/hooks/use-toast";
+import { useUpdateLastSeen } from "@/hooks/use-update-last-seen";
 import { ParticlesWrapper } from "@/screens/home";
 import { LottieSearch } from "@/screens/search";
 import { useUserState } from "@/zustand/useStore";
@@ -29,6 +30,7 @@ export default function Search() {
   const { toast } = useToast();
   const router = useRouter();
   const [trigger, setTrigger] = useState(false);
+  useUpdateLastSeen();
 
   // Handle cancel search
   const handleCancel = async () => {
