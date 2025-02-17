@@ -57,7 +57,7 @@ export default function Search() {
           await removeFromQueue(id);
           await resetFilter(isPro, id);
           toast({
-            description: "Match Found!",
+            title: "Match Found!",
           });
           router.push("/chat/" + result);
         }
@@ -90,7 +90,7 @@ export default function Search() {
         removeFromQueue(document.data().user2);
         resetFilter(isPro, userId);
         toast({
-          description: "Match Found!",
+          title: "Match Found!",
         });
         router.push("/chat/" + document.id);
       }
