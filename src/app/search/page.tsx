@@ -57,8 +57,7 @@ export default function Search() {
           await removeFromQueue(id);
           await resetFilter(isPro, id);
           toast({
-            title: "Match Found!",
-            description: "You have been matched with a partner",
+            description: "Match Found!",
           });
           router.push("/chat/" + result);
         }
@@ -91,8 +90,7 @@ export default function Search() {
         removeFromQueue(document.data().user2);
         resetFilter(isPro, userId);
         toast({
-          title: "Match Found!",
-          description: "You have been matched with a partner",
+          description: "Match Found!",
         });
         router.push("/chat/" + document.id);
       }
