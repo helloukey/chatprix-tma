@@ -9,12 +9,12 @@ import { getFirestore } from "firebase/firestore";
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
   apiKey: process.env.FIREBASE_API_KEY,
-  authDomain: "chatprix-tma-6c521.firebaseapp.com",
-  projectId: "chatprix-tma-6c521",
-  storageBucket: "chatprix-tma-6c521.firebasestorage.app",
-  messagingSenderId: "775599992642",
-  appId: "1:775599992642:web:a8e936c7d2cbdf9075e2db",
-  measurementId: "G-T5X774VPXE",
+  authDomain: "chatprix-tma-dcdd6.firebaseapp.com",
+  projectId: "chatprix-tma-dcdd6",
+  storageBucket: "chatprix-tma-dcdd6.firebasestorage.app",
+  messagingSenderId: "492422120216",
+  appId: "1:492422120216:web:fcd97025f4197c8ef6146d",
+  measurementId: "G-C3TWGMJPG6"
 };
 
 // Initialize Firebase
