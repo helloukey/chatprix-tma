@@ -57,8 +57,8 @@ export default function Search() {
           await removeFromQueue(id);
           await resetFilter(isPro, id);
           toast({
-            title: "Match Found!",
-            description: "Redirecting to chat...",
+            title: "Chat Started ✅",
+            description: "You’re now talking with someone. Enjoy the chat!",
           });
           router.push("/chat/" + result);
         }
@@ -91,8 +91,8 @@ export default function Search() {
         removeFromQueue(document.data().user2);
         resetFilter(isPro, userId);
         toast({
-          title: "Match Found!",
-          description: "Redirecting to chat...",
+          title: "Chat Started ✅",
+          description: "You’re now talking with someone. Enjoy the chat!",
         });
         router.push("/chat/" + document.id);
       }
