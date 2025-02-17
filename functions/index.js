@@ -1,10 +1,10 @@
-const {initializeApp} = require("firebase-admin/app");
-const {getFirestore, Timestamp} = require("firebase-admin/firestore");
-const {onSchedule} = require("firebase-functions/scheduler");
+import {initializeApp} from "firebase-admin/app";
+import {getFirestore, Timestamp} from "firebase-admin/firestore";
+import {onSchedule} from "firebase-functions/scheduler";
 
 initializeApp();
 
-exports.clearInactiveUsers = onSchedule("* * * * *", async () => {
+export const clearInactiveUsers = onSchedule("* * * * *", async () => {
   const db = getFirestore();
   const min = 60 * 1000;
   const oneMinuteAgo = Timestamp.fromMillis(Timestamp.now().toMillis() - min);
