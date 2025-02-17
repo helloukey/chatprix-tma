@@ -199,7 +199,6 @@ const findMatchFromQueueNoFilter = async (
     // Find a match from the queue
     const queuesRef = collection(db, "queues");
     const querySnapshot = await getSnapshotNoFilter(queuesRef, userId, user);
-    console.log(querySnapshot);
     if (querySnapshot.empty) {
       return null;
     }
