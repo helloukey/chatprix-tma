@@ -422,11 +422,8 @@ export const Hero = () => {
         setSearchLoading(true);
         // Delete active batch
         await deleteActiveBatch(userId);
-        // Update queue and lastSeen
-        await updateDoc(doc(db, "users", userId), {
-          lastSeen: Timestamp.now(),
-        });
-        const result = await updateQueue(user, userId);
+        const updatedUser = {...user, lastSeen: Timestamp.now()};
+        const result = await updateQueue(updatedUser, userId);
         if (result) {
           // Navigate to search screen
           router.push("/search");
