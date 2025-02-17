@@ -78,7 +78,7 @@ const resetFilter = async (isPro: boolean, userId: string) => {
 
 const updateUserLastSeen = async (userId: string) => {
   try {
-    await updateDoc(doc(db, "users", userId), {
+    await updateDoc(doc(db, "queues", userId), {
       lastSeen: Timestamp.now(),
     });
   } catch (error) {
