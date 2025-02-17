@@ -44,8 +44,13 @@ const getSnapshot = async (
   );
   const q4 = where("dob", ">=", Timestamp.fromDate(minDOB));
   const q5 = where("dob", "<=", Timestamp.fromDate(maxDOB));
+  const q6 = where(
+    "lastSeen",
+    ">=",
+    Timestamp.fromDate(new Date(now.getTime() - 60000))
+  );
 
-  const query1 = query(queryRef, and(q1, q2, q3, q4, q5));
+  const query1 = query(queryRef, and(q1, q2, q3, q4, q5, q6));
   const snapshot = await getDocs(query1);
   return snapshot;
 };
@@ -142,12 +147,19 @@ const getSnapshotNoFilter = async (
   const currentAge = user.dob
     ? new Date().getFullYear() - user.dob.toDate().getFullYear()
     : null;
+  const now = new Date();
+  const lastMinute = where(
+    "lastSeen",
+    ">=",
+    Timestamp.fromDate(new Date(now.getTime() - 60000))
+  );
 
   // Query 1: Users with filters field as null
   const query1 = query(
     queryRef,
     where(documentId(), "!=", userId),
-    where("filters", "==", null)
+    where("filters", "==", null),
+    lastMinute
   );
 
   // Query 2: Users with matching filters
@@ -166,7 +178,7 @@ const getSnapshotNoFilter = async (
     conditions.push(where("filters.maxAge", "<=", 99));
   }
 
-  const query2 = query(queryRef, ...conditions);
+  const query2 = query(queryRef, ...conditions, lastMinute);
 
   const snapshot1 = await getDocs(query1);
   if (!snapshot1.empty) {
