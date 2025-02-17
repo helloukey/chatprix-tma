@@ -3,6 +3,7 @@ import localFont from "next/font/local";
 import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
 import { Toaster } from "@/components/ui/toaster";
+import Script from "next/script";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -20,7 +21,7 @@ export const metadata: Metadata = {
   description: "Anonymous Chat App",
   appleWebApp: {
     title: "Chatprix",
-  }
+  },
 };
 
 export default function RootLayout({
@@ -30,6 +31,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      <Script src="https://js.onclckvd.com/in-stream-ad-admanager/tma.js"/>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased w-full max-w-md mx-auto`}
       >
