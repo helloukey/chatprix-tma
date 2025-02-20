@@ -283,7 +283,7 @@ export const SettingsDrawer = () => {
 
 export const AlertDialogWrapper = () => {
   const showAd = useMountAd({ id: ads.filter });
-  const { isPro, setIsPro, setFilterOpen } = useUserState((state) => state);
+  const { isPro, userId, setIsPro, setFilterOpen } = useUserState((state) => state);
   const { toast } = useToast();
   const [loading, setLoading] = useState(false);
   const [filterDialogOpen, setFilterDialogOpen] = useState(false);
@@ -345,6 +345,7 @@ export const AlertDialogWrapper = () => {
       <Button
         variant="secondary"
         className="w-full"
+        disabled={loading || !userId}
         onClick={handleFilterDialog}
       >
         <Filter /> Preferences
