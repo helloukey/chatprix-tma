@@ -465,7 +465,7 @@ export const Hero = () => {
         <Button
           className="w-full"
           onClick={handleSearch}
-          disabled={searchLoading || loading}
+          disabled={searchLoading || loading || !userId}
         >
           {searchLoading || loading ? (
             <Loader2 className="animate-spin" />
