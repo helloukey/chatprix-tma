@@ -138,7 +138,7 @@ export const SettingsDrawer = () => {
 
   return (
     <Drawer open={drawerOpen} onOpenChange={setDrawerOpen}>
-      <DrawerTrigger>
+      <DrawerTrigger disabled={!userId}>
         <Bolt />
       </DrawerTrigger>
       <DrawerContent>
