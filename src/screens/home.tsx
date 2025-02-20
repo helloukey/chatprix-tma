@@ -470,7 +470,7 @@ export const Hero = () => {
           {searchLoading || loading ? (
             <Loader2 className="animate-spin" />
           ) : null}
-          <Search /> Search
+          <Search /> {searchLoading ? "Searching..." : "Search"}
         </Button>
       </div>
     </div>
