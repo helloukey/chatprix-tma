@@ -30,6 +30,7 @@ export default function Search() {
   const { toast } = useToast();
   const router = useRouter();
   const [trigger, setTrigger] = useState(false);
+  const [isEntered, setIsEntered] = useState(false);
   useUpdateLastSeen();
 
   // Handle cancel search
@@ -50,6 +51,10 @@ export default function Search() {
   useEffect(() => {
     const findMatch = async (id: string, user: DocumentData) => {
       try {
+        if (!isEntered) {
+          await new Promise((resolve) => setTimeout(resolve, 3000));
+          setIsEntered(true);
+        }
         const result = user.filters
           ? await findMatchFromQueue(id, user)
           : await findMatchFromQueueNoFilter(id, user);
@@ -70,7 +75,7 @@ export default function Search() {
     if (userId && user) {
       findMatch(userId, user);
     }
-  }, [userId, user, router, toast, trigger, isPro]);
+  }, [userId, user, router, toast, trigger, isPro, isEntered]);
 
   // Check for changes in active chat is user is already in chat
   useEffect(() => {
