@@ -31,6 +31,7 @@ export default function Search() {
   const router = useRouter();
   const [trigger, setTrigger] = useState(false);
   const [isEntered, setIsEntered] = useState(false);
+  const [timer, setTimer] = useState(0);
   useUpdateLastSeen();
 
   // Handle cancel search
@@ -119,6 +120,24 @@ export default function Search() {
 
     return () => unsub();
   }, [userId]);
+
+  // Update timer every second and show a toast after 300 seconds and stop the timer
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setTimer((prev) => prev + 1);
+    }, 1000);
+
+    if (timer === 30) {
+      toast({
+        title: "No Match Found",
+        description: "Try again later",
+        variant: "destructive"
+      });
+      clearInterval(interval);
+    }
+
+    return () => clearInterval(interval);
+  }, [timer, toast]);
 
   return (
     <ParticlesWrapper>
