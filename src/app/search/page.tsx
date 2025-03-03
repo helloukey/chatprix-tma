@@ -127,7 +127,7 @@ export default function Search() {
       setTimer((prev) => prev + 1);
     }, 1000);
 
-    if (timer === 30) {
+    if (timer === 90) {
       // Toast for showing that search taking longer than usual
       toast({
         title: "Search Taking Longer Than Usual ⏳",
