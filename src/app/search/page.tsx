@@ -128,10 +128,11 @@ export default function Search() {
     }, 1000);
 
     if (timer === 30) {
+      // Toast for showing that search taking longer than usual
       toast({
-        title: "No Match Found",
-        description: "Try again later",
-        variant: "destructive"
+        title: "Search Taking Longer Than Usual ⏳",
+        description: "We are still searching for a partner for you.",
+        variant: "destructive",
       });
       clearInterval(interval);
     }
