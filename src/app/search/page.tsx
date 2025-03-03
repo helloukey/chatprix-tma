@@ -51,6 +51,7 @@ export default function Search() {
   useEffect(() => {
     const findMatch = async (id: string, user: DocumentData) => {
       try {
+        // Wait for 3 seconds before entering the queue
         if (!isEntered) {
           await new Promise((resolve) => setTimeout(resolve, 3000));
           setIsEntered(true);
