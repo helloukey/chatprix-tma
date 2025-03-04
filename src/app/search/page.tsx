@@ -10,6 +10,7 @@ import {
 import { resetFilter } from "@/firebase/user";
 import { useToast } from "@/hooks/use-toast";
 import { useUpdateLastSeen } from "@/hooks/use-update-last-seen";
+import { waitIfEntered } from "@/lib/utils";
 import { ParticlesWrapper } from "@/screens/home";
 import { LottieSearch } from "@/screens/search";
 import { useUserState } from "@/zustand/useStore";
@@ -53,10 +54,7 @@ export default function Search() {
     const findMatch = async (id: string, user: DocumentData) => {
       try {
         // Wait for 3 seconds before entering the queue
-        if (!isEntered) {
-          await new Promise((resolve) => setTimeout(resolve, 3000));
-          setIsEntered(true);
-        }
+        await waitIfEntered(isEntered, setIsEntered);
         const result = user.filters
           ? await findMatchFromQueue(id, user)
           : await findMatchFromQueueNoFilter(id, user);

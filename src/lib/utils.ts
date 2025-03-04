@@ -255,3 +255,18 @@ export const isSubscriptionValid = (unixTimestamp: number) => {
   const expirationDate = startTime * 1000 + THIRTY_DAYS; // Convert Unix to milliseconds and add 30 days
   return Date.now() < expirationDate; // Check if current time is before expiration
 };
+
+export const waitIfEntered = async (
+  isEntered: boolean,
+  setIsEntered: (param: boolean) => void
+) => {
+  const times = [2000, 3000, 4000, 5000];
+  if (!isEntered) {
+    await new Promise((resolve) =>
+      setTimeout(resolve, times[Math.floor(Math.random() * times.length)])
+    );
+    setIsEntered(true);
+  } else {
+    return;
+  }
+};
