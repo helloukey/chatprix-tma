@@ -1,3 +1,1 @@
-if(window) {
-    console.log('sandbox.js loaded');
-}
+console.log(global)
